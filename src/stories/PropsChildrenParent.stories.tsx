@@ -74,27 +74,65 @@ export const SinglePropsChild = () => {
   );
 };
 
-export const UpdateSingleChildProps = () => {
+export const ReadSingleChildProps = () => {
   return (
     <div>
-      <p>I can modify the props of a child.</p>
-      <PropsChildrenParent storyUpdateProps>
-        <ExampleComponent description="Updated: This is a bus" />
+      <p>I can read the props of a child.</p>
+      <PropsChildrenParent storyReadProps>
+        <ExampleComponent description="This is a bus" />
       </PropsChildrenParent>
     </div>
   );
 };
 
-// export const SubscribeSingleChildCallback = () => {
-//   return (
-//     <div>
-//       <p>I can subscribe to an callback (event) of a child.</p>
-//       <PropsChildrenParent storyUpdateProps>
-//         <ExampleComponent description="Updated: This is a bus" />
-//       </PropsChildrenParent>
-//     </div>
-//   );
-// };
+export const UpdateSingleChildProps = () => {
+  return (
+    <div>
+      <p>I can modify the props of a child.</p>
+      <PropsChildrenParent storyUpdateProps>
+        <ExampleComponent description="This is a bus" />
+      </PropsChildrenParent>
+    </div>
+  );
+};
+
+export const SubscribeSingleChildCallback = () => {
+  return (
+    <div>
+      <p>I can subscribe to an callback (event) of a child.</p>
+      <PropsChildrenParent storyHandleClick>
+        <ExampleComponent description="This is a bus" />
+      </PropsChildrenParent>
+    </div>
+  );
+};
+
+export const WrapSingleChildEvent = () => {
+  const [clickMessage, setClickMessage] = React.useState("");
+
+  React.useEffect(() => {
+    const clickTimeout = setTimeout(() => {
+      setClickMessage("");
+    }, 1000);
+
+    return () => {
+      clearTimeout(clickTimeout);
+    };
+  }, [clickMessage]);
+
+  return (
+    <div>
+      <p>I can subscribe to an callback (event) of a child.</p>
+      <PropsChildrenParent storyHandleClick>
+        <ExampleComponent
+          description="This is a bus"
+          onExampleClick={() => setClickMessage("Child clicked!")}
+        />
+      </PropsChildrenParent>
+      <div>{clickMessage}</div>
+    </div>
+  );
+};
 
 // export const MultipleChildElements = () => {
 //   return (

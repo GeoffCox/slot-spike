@@ -78,11 +78,7 @@ export const SlotParent = (props: Props) => {
     }
 
     if (storyHandleClick) {
-      console.log("storyHandleClick");
       const onClick = state.exampleComponent?.onExampleClick;
-      if (onClick) {
-        console.log("existingOnClick");
-      }
       state.exampleComponent.onExampleClick = () => {
         setClickMessage("Clicked!");
         onClick && onClick();

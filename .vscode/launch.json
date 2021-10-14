@@ -8,7 +8,7 @@
       "type": "node-terminal"
     },
     {
-      "type": "pwa-chrome",
+      "type": "chrome",
       "request": "launch",
       "name": "Launch Chrome for Storybook",
       "breakOnLoad": true,

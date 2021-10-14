@@ -76,7 +76,7 @@ export const SinglePropsChild = () => {
 export const ReadSingleChildProps = () => {
   return (
     <div>
-      <p>I can modify the props of a child.</p>
+      <p>I can read the props of a child.</p>
       <SlotParent
         exampleComponent={{ description: "This is a bus" }}
         storyReadProps
