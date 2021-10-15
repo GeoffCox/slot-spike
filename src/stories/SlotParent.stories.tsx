@@ -3,6 +3,7 @@ import { ComponentMeta } from "@storybook/react";
 import { SlotParent } from "./SlotParent";
 import { ExampleComponent } from "./ExampleComponent";
 import { ShorthandRenderFunction } from "./slots/types";
+import { renderBus } from "./renderBus";
 
 export default {
   title: "Spike/slot attributes",
@@ -10,29 +11,15 @@ export default {
 } as ComponentMeta<typeof SlotParent>;
 
 export const SlotContent = () => {
-  const renderChild: ShorthandRenderFunction<
-    React.HTMLAttributes<HTMLElement>
-  > = (component, props): React.ReactNode => {
-    return (
-      <div>
-        <p>A render function</p>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
-        </p>
-      </div>
-    );
-  };
-
   return (
     <div>
       <div>
         <h3>I can slot a primitive value.</h3>
-        <SlotParent content="Primitive (string)" />
+        <SlotParent content="This is a bus (string)" />
       </div>
       <div>
         <h3>I can slot an HTML element.</h3>
-        <SlotParent content={<label>HTML element (label)</label>} />
+        <SlotParent content={<label>This is a bus (label)</label>} />
       </div>
       <div>
         <h3>I can slot a component (JSX).</h3>
@@ -41,24 +28,17 @@ export const SlotContent = () => {
         />
       </div>
       <div>
-        <p>I can slot a render function.</p>
+        <h3>I can slot a render function.</h3>
         {/* //Strange to have to pass the function as children rather than directly.
         //Possible issue with the way getShorthand works */}
-        <SlotParent content={{ children: renderChild }} />
+        <SlotParent
+          content={{ children: renderBus({ description: "This is a bus" }) }}
+        />
       </div>
       <div>
-        <p>I can slot component props.</p>
+        <h3>I can slot component props.</h3>
         <SlotParent exampleComponent={{ description: "This is a bus" }} />
       </div>
-    </div>
-  );
-};
-
-export const SinglePropsChild = () => {
-  return (
-    <div>
-      <p>I can slot component props.</p>
-      <SlotParent exampleComponent={{ description: "This is a bus" }} />
     </div>
   );
 };
