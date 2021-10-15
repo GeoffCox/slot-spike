@@ -237,25 +237,79 @@ export const SubscribeToEvent = () => {
 };
 
 export const WrapSingleChildEvent = () => {
+  const [htmlElementMessage, setHtmlElementMessage] = useAutoClearString();
+  const [
+    htmlElementChildMessage,
+    setHtmlElementChildMessage,
+  ] = useAutoClearString();
   const [jsxMessage, setJsxMessage] = useAutoClearString();
-  const [jsxChildMessage, setChildJsxMessage] = useAutoClearString();
+  const [jsxChildMessage, setJsxChildMessage] = useAutoClearString();
+  const [renderMessage, setRenderMessage] = useAutoClearString();
+  const [renderChildMessage, setRenderChildMessage] = useAutoClearString();
+
+  const renderChild = (): React.ReactNode => {
+    return (
+      <div onClick={() => setRenderChildMessage("Child Clicked!")}>
+        <p>A render function</p>
+        <p>Hover over this to see the tooltip value</p>
+      </div>
+    );
+  };
 
   return (
     <div>
-      <h3>I can wrap an event (onExampleClick) of a component (JSX).</h3>
-      <PropsChildrenParent
-        storySubscribeEvent={{
-          name: "onExampleClick",
-          onEvent: (value: any) => setJsxMessage("Clicked!"),
-        }}
-      >
-        <ExampleComponent
-          description="This is a bus"
-          onExampleClick={() => setChildJsxMessage("Child clicked!")}
-        />
-      </PropsChildrenParent>
-      <div>{jsxMessage}</div>
-      <div>{jsxChildMessage}</div>
+      <div>
+        <h3>I can wrap an event of a primitive value.</h3>
+        <p style={{ color: "green" }}>
+          This is N/A. Primitive values do not have any events.
+        </p>
+      </div>
+      <div>
+        <h3>I can wrap an event (onChange) of an HTML element</h3>
+        <PropsChildrenParent
+          storySubscribeEvent={{
+            name: "onChange",
+            onEvent: (value: any) => setHtmlElementMessage("Changed!"),
+          }}
+        >
+          <input
+            type="text"
+            defaultValue="Change some text here"
+            onChange={() => setHtmlElementChildMessage("Child Changed!")}
+          />
+        </PropsChildrenParent>
+        <div>{htmlElementMessage}</div>
+        <div>{htmlElementChildMessage}</div>
+      </div>
+      <div>
+        <h3>I can wrap an event (onExampleClick) of a component (JSX).</h3>
+        <PropsChildrenParent
+          storySubscribeEvent={{
+            name: "onExampleClick",
+            onEvent: (value: any) => setJsxMessage("Clicked!"),
+          }}
+        >
+          <ExampleComponent
+            description="This is a bus"
+            onExampleClick={() => setJsxChildMessage("Child clicked!")}
+          />
+        </PropsChildrenParent>
+        <div>{jsxMessage}</div>
+        <div>{jsxChildMessage}</div>
+      </div>
+      <div>
+        <h3>I can wrap an event (onClick) of a render function.</h3>
+        <PropsChildrenParent
+          storySubscribeEvent={{
+            name: "onClick",
+            onEvent: (value: any) => setRenderMessage("Clicked!"),
+          }}
+        >
+          {renderChild()}
+        </PropsChildrenParent>
+        <div>{renderMessage}</div>
+        <div>{renderChildMessage}</div>
+      </div>
     </div>
   );
 };
