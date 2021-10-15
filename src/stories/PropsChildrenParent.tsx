@@ -2,7 +2,7 @@ import React from "react";
 import "./spike.css";
 
 type StoryOptions = {
-  storyReadProps?: boolean;
+  storyReadProp?: string;
   storyUpdateProps?: boolean;
   storyHandleClick?: boolean;
 };
@@ -16,12 +16,7 @@ const isChildComponent = (children: any) => {
 };
 
 export const PropsChildrenParent = (props: Props) => {
-  const {
-    children,
-    storyReadProps,
-    storyUpdateProps,
-    storyHandleClick,
-  } = props;
+  const { children, storyReadProp, storyUpdateProps, storyHandleClick } = props;
 
   // ----- Hooks ----- //
   const [clickMessage, setClickMessage] = React.useState("");
@@ -38,40 +33,48 @@ export const PropsChildrenParent = (props: Props) => {
 
   // ---- props.children read -----//
 
-  let descriptions: string[] = [];
+  let readProps: string[] = [];
 
-  if (storyReadProps && children) {
+  if (storyReadProp && storyReadProp.length > 0 && children) {
     if (Array.isArray(children)) {
       const anyChildren = children as any;
-      anyChildren.forEach((child: any) =>
-        descriptions.push(`Read from child: ${child.props.description}`)
-      );
+      anyChildren.forEach((child: any) => {
+        if (isChildComponent(child)) {
+          readProps.push(`Read from child: ${child.props[storyReadProp]}`);
+        } else {
+          readProps.push("Could not read from child. Child is not a component");
+        }
+      });
     } else if (isChildComponent(children)) {
       const singleChild = children as any;
-      descriptions.push(`Read from child: ${singleChild.props.description}`);
+      readProps.push(`Read from child: ${singleChild.props[storyReadProp]}`);
     }
   }
 
   // ---- props.children update -----//
 
   const renderChild = (child: any, i?: number) => {
-    const updatedProps: any = {};
+    if (isChildComponent(child)) {
+      const updatedProps: any = {};
 
-    const indexText = i ? `[${i}] ` : "";
+      const indexText = i ? `[${i}] ` : "";
 
-    if (storyUpdateProps) {
-      updatedProps.description = `${indexText}Updated: ${child.props.description}`;
+      if (storyUpdateProps) {
+        updatedProps.description = `${indexText}Updated: ${child.props.description}`;
+      }
+
+      if (storyHandleClick) {
+        const onClick = child.props.onExampleClick;
+        updatedProps.onExampleClick = () => {
+          setClickMessage(`${indexText}Clicked!`);
+          onClick && onClick();
+        };
+      }
+
+      return React.cloneElement(child, updatedProps);
     }
 
-    if (storyHandleClick) {
-      const onClick = child.props.onExampleClick;
-      updatedProps.onExampleClick = () => {
-        setClickMessage(`${indexText}Clicked!`);
-        onClick && onClick();
-      };
-    }
-
-    return React.cloneElement(child, updatedProps);
+    return child;
   };
 
   const renderChildren = () => {
@@ -90,9 +93,16 @@ export const PropsChildrenParent = (props: Props) => {
   return (
     <div className="parent">
       <div className="child">{renderChildren()}</div>
-      {descriptions.map((description) => {
-        return <div>{description}</div>;
-      })}
+      {storyReadProp && (
+        <div>
+          <div>Property: {storyReadProp}</div>
+          <div>
+            {readProps.map((description) => {
+              return <div>{description}</div>;
+            })}
+          </div>
+        </div>
+      )}
       <div>{clickMessage}</div>
     </div>
   );
