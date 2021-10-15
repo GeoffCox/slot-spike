@@ -34,7 +34,7 @@ export const SingleChild = () => {
         </PropsChildrenParent>
       </div>
       <div>
-        <h3>I can slot JSX.</h3>
+        <h3>I can slot a component (JSX).</h3>
         <PropsChildrenParent>
           <ExampleComponent />
         </PropsChildrenParent>
@@ -69,13 +69,19 @@ export const ReadSingleChildProps = () => {
   return (
     <div>
       <div>
+        <h3>I can read the props of a primitive value</h3>
+        <PropsChildrenParent storyReadProp="$">
+          Primitive (string)
+        </PropsChildrenParent>
+      </div>
+      <div>
         <h3>I can read the props of an HTML element.</h3>
         <PropsChildrenParent storyReadProp="value">
           <input type="text" value="This is a bus" />
         </PropsChildrenParent>
       </div>
       <div>
-        <h3>I can read the props of a component.</h3>
+        <h3>I can read the props of a component (JSX).</h3>
         <PropsChildrenParent storyReadProp="description">
           <ExampleComponent description="This is a bus" />
         </PropsChildrenParent>
@@ -91,6 +97,12 @@ export const ReadSingleChildProps = () => {
             title: "This is the title of the render function's root element",
           })}
         </PropsChildrenParent>
+      </div>
+      <div>
+        <h3>I can read the slotted component props.</h3>
+        <p style={{ color: "green" }}>
+          This is N/A for the props.children approach.
+        </p>
       </div>
     </div>
   );

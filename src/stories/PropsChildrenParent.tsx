@@ -2,7 +2,7 @@ import React from "react";
 import "./spike.css";
 
 type StoryOptions = {
-  // a property name to read from the children
+  // a property name to read from the children, $ to read primitive value
   storyReadProp?: string;
   storyUpdateProps?: boolean;
   storyHandleClick?: boolean;
@@ -42,6 +42,8 @@ export const PropsChildrenParent = (props: Props) => {
       anyChildren.forEach((child: any) => {
         if (isChildComponent(child)) {
           readProps.push(`Read from child: ${child.props[storyReadProp]}`);
+        } else if (storyReadProp === "$") {
+          readProps.push(`Read primitive from child: ${child}`);
         } else {
           readProps.push("Could not read from child. Child is not a component");
         }
@@ -49,6 +51,12 @@ export const PropsChildrenParent = (props: Props) => {
     } else if (isChildComponent(children)) {
       const singleChild = children as any;
       readProps.push(`Read from child: ${singleChild.props[storyReadProp]}`);
+    } else if (storyReadProp === "$") {
+      readProps.push(`Read primitive from child: ${children}`);
+    } else {
+      readProps.push(
+        "Could not read from children. Children is not a component, primitive, or array"
+      );
     }
   }
 
