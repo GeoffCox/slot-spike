@@ -2,6 +2,7 @@ import React from "react";
 import "./spike.css";
 
 type StoryOptions = {
+  // a property name to read from the children
   storyReadProp?: string;
   storyUpdateProps?: boolean;
   storyHandleClick?: boolean;
