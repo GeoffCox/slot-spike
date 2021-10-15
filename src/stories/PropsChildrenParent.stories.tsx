@@ -3,6 +3,7 @@ import { ComponentMeta } from "@storybook/react";
 import { PropsChildrenParent } from "./PropsChildrenParent";
 import { ExampleComponent } from "./ExampleComponent";
 import { useAutoClearString } from "./useAutoClearString";
+import { renderBus } from "./renderBus";
 
 export default {
   title: "Spike/props.children",
@@ -10,39 +11,29 @@ export default {
 } as ComponentMeta<typeof PropsChildrenParent>;
 
 export const SlotContent = () => {
-  const renderChild = (): React.ReactNode => {
-    return (
-      <div>
-        <p>A render function</p>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
-        </p>
-      </div>
-    );
-  };
-
   return (
     <div>
       <div>
         <h3>I can slot a primitive value.</h3>
-        <PropsChildrenParent>Primitive (string)</PropsChildrenParent>
+        <PropsChildrenParent>This is a bus (string)</PropsChildrenParent>
       </div>
       <div>
         <h3>I can slot an HTML element.</h3>
         <PropsChildrenParent>
-          <label>HTML element (label)</label>
+          <label>This is a bus (label)</label>
         </PropsChildrenParent>
       </div>
       <div>
         <h3>I can slot a component (JSX).</h3>
         <PropsChildrenParent>
-          <ExampleComponent />
+          <ExampleComponent description="This is a bus" />
         </PropsChildrenParent>
       </div>
       <div>
         <h3>I can slot a render function.</h3>
-        <PropsChildrenParent>{renderChild()}</PropsChildrenParent>
+        <PropsChildrenParent>
+          {renderBus({ description: "This is a bus" })}
+        </PropsChildrenParent>
       </div>
       <div>
         <h3>I can slot component props.</h3>
@@ -55,27 +46,18 @@ export const SlotContent = () => {
 };
 
 export const ReadProps = () => {
-  const renderChild = (props: { title: string }): React.ReactNode => {
-    return (
-      <div title={props.title}>
-        <p>A render function</p>
-        <p>Hover over this to see the tooltip value</p>
-      </div>
-    );
-  };
-
   return (
     <div>
       <div>
         <h3>I can read the props of a primitive value</h3>
         <PropsChildrenParent storyReadProp="$">
-          Primitive (string)
+          This is a bus (string)
         </PropsChildrenParent>
       </div>
       <div>
         <h3>I can read the props of an HTML element.</h3>
         <PropsChildrenParent storyReadProp="defaultValue">
-          <input type="text" defaultValue="This is a bus" />
+          <input type="text" defaultValue="This is a bus (input)" />
         </PropsChildrenParent>
       </div>
       <div>
@@ -91,8 +73,9 @@ export const ReadProps = () => {
           props passed to the function.
         </p>
         <PropsChildrenParent storyReadProp="title">
-          {renderChild({
-            title: "This is the title of the render function's root element",
+          {renderBus({
+            title: "This is a bus",
+            description: "Hover for the tooltip",
           })}
         </PropsChildrenParent>
       </div>
@@ -107,15 +90,6 @@ export const ReadProps = () => {
 };
 
 export const UpdateProps = () => {
-  const renderChild = (props: { title: string }): React.ReactNode => {
-    return (
-      <div title={props.title}>
-        <p>A render function</p>
-        <p>Hover over this to see the tooltip value</p>
-      </div>
-    );
-  };
-
   return (
     <div>
       <div>
@@ -163,8 +137,9 @@ export const UpdateProps = () => {
             onUpdate: (value: any) => `Updated: ${value}`,
           }}
         >
-          {renderChild({
-            title: "This is the title of the render function's root element",
+          {renderBus({
+            title: "This is a bus",
+            description: "Hover for the tooltip",
           })}
         </PropsChildrenParent>
       </div>
@@ -176,15 +151,6 @@ export const SubscribeToEvent = () => {
   const [htmlElementMessage, setHtmlElementMessage] = useAutoClearString();
   const [jsxMessage, setJsxMessage] = useAutoClearString();
   const [renderMessage, setRenderMessage] = useAutoClearString();
-
-  const renderChild = (): React.ReactNode => {
-    return (
-      <div>
-        <p>A render function</p>
-        <p>Hover over this to see the tooltip value</p>
-      </div>
-    );
-  };
 
   return (
     <div>
@@ -228,7 +194,7 @@ export const SubscribeToEvent = () => {
             onEvent: (value: any) => setRenderMessage("Clicked!"),
           }}
         >
-          {renderChild()}
+          {renderBus({ description: "This is a bus" })}
         </PropsChildrenParent>
         <div>{renderMessage}</div>
       </div>
@@ -247,11 +213,10 @@ export const WrapSingleChildEvent = () => {
   const [renderMessage, setRenderMessage] = useAutoClearString();
   const [renderChildMessage, setRenderChildMessage] = useAutoClearString();
 
-  const renderChild = (): React.ReactNode => {
+  const renderBusWithOnClick = (): React.ReactNode => {
     return (
       <div onClick={() => setRenderChildMessage("Child Clicked!")}>
-        <p>A render function</p>
-        <p>Hover over this to see the tooltip value</p>
+        {renderBus({ description: "This is a bus" })}
       </div>
     );
   };
@@ -305,7 +270,7 @@ export const WrapSingleChildEvent = () => {
             onEvent: (value: any) => setRenderMessage("Clicked!"),
           }}
         >
-          {renderChild()}
+          {renderBusWithOnClick()}
         </PropsChildrenParent>
         <div>{renderMessage}</div>
         <div>{renderChildMessage}</div>

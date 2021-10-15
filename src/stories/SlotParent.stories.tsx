@@ -9,42 +9,10 @@ export default {
   component: SlotParent,
 } as ComponentMeta<typeof SlotParent>;
 
-export const SinglePrimitiveChild = () => {
-  return (
-    <div>
-      <p>I can slot a primitive value.</p>
-      <SlotParent content="Primitive (string)" />
-    </div>
-  );
-};
-
-export const SingleHtmlElementChild = () => {
-  return (
-    <div>
-      <p>I can slot an HTML element.</p>
-      <SlotParent content={<label>HTML element (label)</label>} />
-    </div>
-  );
-};
-
-export const SingleJsxChild = () => {
-  return (
-    <div>
-      <p>I can slot JSX.</p>
-      <SlotParent content={<ExampleComponent />} />
-    </div>
-  );
-};
-
-export const SingleRenderFunctionChild = () => {
-  // TODO: Figure this out.  I don't think I wrote this correctly.
-  // The render function typing that puts it on children is confusing.
+export const SlotContent = () => {
   const renderChild: ShorthandRenderFunction<
     React.HTMLAttributes<HTMLElement>
-  > = (
-    component: React.ElementType<React.HTMLAttributes<HTMLElement>>,
-    props: Omit<React.HTMLAttributes<HTMLElement>, "children" | "as">
-  ): React.ReactNode => {
+  > = (component, props): React.ReactNode => {
     return (
       <div>
         <p>A render function</p>
@@ -58,8 +26,30 @@ export const SingleRenderFunctionChild = () => {
 
   return (
     <div>
-      <p>I can slot a render function.</p>
-      <SlotParent content={{ children: renderChild }} />
+      <div>
+        <h3>I can slot a primitive value.</h3>
+        <SlotParent content="Primitive (string)" />
+      </div>
+      <div>
+        <h3>I can slot an HTML element.</h3>
+        <SlotParent content={<label>HTML element (label)</label>} />
+      </div>
+      <div>
+        <h3>I can slot a component (JSX).</h3>
+        <SlotParent
+          content={<ExampleComponent description="This is a bus" />}
+        />
+      </div>
+      <div>
+        <p>I can slot a render function.</p>
+        {/* //Strange to have to pass the function as children rather than directly.
+        //Possible issue with the way getShorthand works */}
+        <SlotParent content={{ children: renderChild }} />
+      </div>
+      <div>
+        <p>I can slot component props.</p>
+        <SlotParent exampleComponent={{ description: "This is a bus" }} />
+      </div>
     </div>
   );
 };
