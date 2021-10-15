@@ -2,13 +2,14 @@ import React from "react";
 import { ComponentMeta } from "@storybook/react";
 import { PropsChildrenParent } from "./PropsChildrenParent";
 import { ExampleComponent } from "./ExampleComponent";
+import { useAutoClearString } from "./useAutoClearString";
 
 export default {
   title: "Spike/props.children",
   component: PropsChildrenParent,
 } as ComponentMeta<typeof PropsChildrenParent>;
 
-export const SingleChild = () => {
+export const SlotContent = () => {
   const renderChild = (): React.ReactNode => {
     return (
       <div>
@@ -53,15 +54,12 @@ export const SingleChild = () => {
   );
 };
 
-export const ReadSingleChildProps = () => {
+export const ReadProps = () => {
   const renderChild = (props: { title: string }): React.ReactNode => {
     return (
       <div title={props.title}>
         <p>A render function</p>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
-        </p>
+        <p>Hover over this to see the tooltip value</p>
       </div>
     );
   };
@@ -76,8 +74,8 @@ export const ReadSingleChildProps = () => {
       </div>
       <div>
         <h3>I can read the props of an HTML element.</h3>
-        <PropsChildrenParent storyReadProp="value">
-          <input type="text" value="This is a bus" />
+        <PropsChildrenParent storyReadProp="defaultValue">
+          <input type="text" defaultValue="This is a bus" />
         </PropsChildrenParent>
       </div>
       <div>
@@ -108,51 +106,156 @@ export const ReadSingleChildProps = () => {
   );
 };
 
-export const UpdateSingleChildProps = () => {
+export const UpdateProps = () => {
+  const renderChild = (props: { title: string }): React.ReactNode => {
+    return (
+      <div title={props.title}>
+        <p>A render function</p>
+        <p>Hover over this to see the tooltip value</p>
+      </div>
+    );
+  };
+
   return (
     <div>
-      <h3>I can modify the props of a child.</h3>
-      <PropsChildrenParent storyUpdateProps>
-        <ExampleComponent description="This is a bus" />
-      </PropsChildrenParent>
+      <div>
+        <h3>I can modify a primitive value</h3>
+        <PropsChildrenParent
+          storyUpdateProp={{
+            name: "$",
+            onUpdate: (value: any) => `Updated: ${value}`,
+          }}
+        >
+          Primitive (string)
+        </PropsChildrenParent>
+      </div>
+      <div>
+        <h3>I can modify props of an HTML element.</h3>
+        <PropsChildrenParent
+          storyUpdateProp={{
+            name: "defaultValue",
+            onUpdate: (value: any) => `Updated: ${value}`,
+          }}
+        >
+          <input type="text" defaultValue="This is a bus" />
+        </PropsChildrenParent>
+      </div>
+      <div>
+        <h3>I can modify props of a component (JSX).</h3>
+        <PropsChildrenParent
+          storyUpdateProp={{
+            name: "description",
+            onUpdate: (value: any) => `Updated: ${value}`,
+          }}
+        >
+          <ExampleComponent description="This is a bus" />
+        </PropsChildrenParent>
+      </div>
+      <div>
+        <h3>I can modify the props of a render function.</h3>
+        <p style={{ color: "green" }}>
+          For props.children, this reads the props of the root element, not the
+          props passed to the function.
+        </p>
+        <PropsChildrenParent
+          storyUpdateProp={{
+            name: "title",
+            onUpdate: (value: any) => `Updated: ${value}`,
+          }}
+        >
+          {renderChild({
+            title: "This is the title of the render function's root element",
+          })}
+        </PropsChildrenParent>
+      </div>
     </div>
   );
 };
 
-export const SubscribeSingleChildCallback = () => {
+export const SubscribeToEvent = () => {
+  const [htmlElementMessage, setHtmlElementMessage] = useAutoClearString();
+  const [jsxMessage, setJsxMessage] = useAutoClearString();
+  const [renderMessage, setRenderMessage] = useAutoClearString();
+
+  const renderChild = (): React.ReactNode => {
+    return (
+      <div>
+        <p>A render function</p>
+        <p>Hover over this to see the tooltip value</p>
+      </div>
+    );
+  };
+
   return (
     <div>
-      <h3>I can subscribe to an callback (event) of a child.</h3>
-      <PropsChildrenParent storyHandleClick>
-        <ExampleComponent description="This is a bus" />
-      </PropsChildrenParent>
+      <div>
+        <h3>I can subscribe to an event of a primitive value.</h3>
+        <p style={{ color: "green" }}>
+          This is N/A. Primitive values do not have any events.
+        </p>
+      </div>
+      <div>
+        <h3>I can subscribe to an event (onChange) of an HTML element</h3>
+        <PropsChildrenParent
+          storySubscribeEvent={{
+            name: "onChange",
+            onEvent: (value: any) => setHtmlElementMessage("Changed!"),
+          }}
+        >
+          <input type="text" defaultValue="Change some text here" />
+        </PropsChildrenParent>
+        <div>{htmlElementMessage}</div>
+      </div>
+      <div>
+        <h3>
+          I can subscribe to an event (onExampleClick) of a component (JSX).
+        </h3>
+        <PropsChildrenParent
+          storySubscribeEvent={{
+            name: "onExampleClick",
+            onEvent: (value: any) => setJsxMessage("Clicked!"),
+          }}
+        >
+          <ExampleComponent description="This is a bus" />
+        </PropsChildrenParent>
+        <div>{jsxMessage}</div>
+      </div>
+      <div>
+        <h3>I can subscribe to an event (onClick) of a render function.</h3>
+        <PropsChildrenParent
+          storySubscribeEvent={{
+            name: "onClick",
+            onEvent: (value: any) => setRenderMessage("Clicked!"),
+          }}
+        >
+          {renderChild()}
+        </PropsChildrenParent>
+        <div>{renderMessage}</div>
+      </div>
     </div>
   );
 };
 
 export const WrapSingleChildEvent = () => {
-  const [clickMessage, setClickMessage] = React.useState("");
-
-  React.useEffect(() => {
-    const clickTimeout = setTimeout(() => {
-      setClickMessage("");
-    }, 1000);
-
-    return () => {
-      clearTimeout(clickTimeout);
-    };
-  }, [clickMessage]);
+  const [jsxMessage, setJsxMessage] = useAutoClearString();
+  const [jsxChildMessage, setChildJsxMessage] = useAutoClearString();
 
   return (
     <div>
-      <h3>I can subscribe to an callback (event) of a child.</h3>
-      <PropsChildrenParent storyHandleClick>
+      <h3>I can wrap an event (onExampleClick) of a component (JSX).</h3>
+      <PropsChildrenParent
+        storySubscribeEvent={{
+          name: "onExampleClick",
+          onEvent: (value: any) => setJsxMessage("Clicked!"),
+        }}
+      >
         <ExampleComponent
           description="This is a bus"
-          onExampleClick={() => setClickMessage("Child clicked!")}
+          onExampleClick={() => setChildJsxMessage("Child clicked!")}
         />
       </PropsChildrenParent>
-      <div>{clickMessage}</div>
+      <div>{jsxMessage}</div>
+      <div>{jsxChildMessage}</div>
     </div>
   );
 };

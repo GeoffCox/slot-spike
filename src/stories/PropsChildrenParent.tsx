@@ -4,8 +4,14 @@ import "./spike.css";
 type StoryOptions = {
   // a property name to read from the children, $ to read primitive value
   storyReadProp?: string;
-  storyUpdateProps?: boolean;
-  storyHandleClick?: boolean;
+  storyUpdateProp?: {
+    name: string;
+    onUpdate: (value: any) => any;
+  };
+  storySubscribeEvent?: {
+    name: string;
+    onEvent: (event: any) => any;
+  };
 };
 
 type Props = React.PropsWithChildren<StoryOptions>;
@@ -17,7 +23,12 @@ const isChildComponent = (children: any) => {
 };
 
 export const PropsChildrenParent = (props: Props) => {
-  const { children, storyReadProp, storyUpdateProps, storyHandleClick } = props;
+  const {
+    children,
+    storyReadProp,
+    storyUpdateProp,
+    storySubscribeEvent,
+  } = props;
 
   // ----- Hooks ----- //
   const [clickMessage, setClickMessage] = React.useState("");
@@ -68,22 +79,26 @@ export const PropsChildrenParent = (props: Props) => {
 
       const indexText = i ? `[${i}] ` : "";
 
-      if (storyUpdateProps) {
-        updatedProps.description = `${indexText}Updated: ${child.props.description}`;
+      if (storyUpdateProp) {
+        updatedProps[storyUpdateProp.name] = storyUpdateProp.onUpdate(
+          child.props[storyUpdateProp.name]
+        );
       }
 
-      if (storyHandleClick) {
-        const onClick = child.props.onExampleClick;
-        updatedProps.onExampleClick = () => {
-          setClickMessage(`${indexText}Clicked!`);
-          onClick && onClick();
+      if (storySubscribeEvent) {
+        const originalEvent = child.props[storySubscribeEvent.name];
+        updatedProps[storySubscribeEvent.name] = (e: any) => {
+          storySubscribeEvent.onEvent(e);
+          originalEvent && originalEvent();
         };
       }
 
       return React.cloneElement(child, updatedProps);
+    } else if (storyUpdateProp?.name === "$") {
+      return storyUpdateProp.onUpdate(child);
     }
 
-    return child;
+    return <>{child}</>;
   };
 
   const renderChildren = () => {
@@ -91,11 +106,8 @@ export const PropsChildrenParent = (props: Props) => {
       const anyChildren = children as any;
       return anyChildren.map((child: any, i: number) => renderChild(child, i));
     }
-    if (children && isChildComponent(children)) {
-      return renderChild(children);
-    }
 
-    return <>{children}</>;
+    return renderChild(children);
   };
 
   // ---- render -----//
