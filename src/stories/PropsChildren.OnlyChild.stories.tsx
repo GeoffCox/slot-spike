@@ -155,13 +155,13 @@ export const SubscribeToEvent = () => {
   return (
     <div>
       <div>
-        <h3>I can subscribe to an event of a primitive value</h3>
+        <h3>I can subscribe to an event on a primitive value</h3>
         <p style={{ color: "green" }}>
           This is N/A. Primitive values do not have any events.
         </p>
       </div>
       <div>
-        <h3>I can subscribe to an event (onChange) of an HTML element</h3>
+        <h3>I can subscribe to an event (onChange) on an HTML element</h3>
         <PropsChildrenParent
           storySubscribeEvent={{
             name: "onChange",
@@ -174,7 +174,7 @@ export const SubscribeToEvent = () => {
       </div>
       <div>
         <h3>
-          I can subscribe to an event (onExampleClick) of a component (JSX).
+          I can subscribe to an event (onExampleClick) on a component (JSX)
         </h3>
         <PropsChildrenParent
           storySubscribeEvent={{
@@ -187,7 +187,7 @@ export const SubscribeToEvent = () => {
         <div>{jsxMessage}</div>
       </div>
       <div>
-        <h3>I can subscribe to an event (onClick) of a render function</h3>
+        <h3>I can subscribe to an event (onClick) on a render function</h3>
         <PropsChildrenParent
           storySubscribeEvent={{
             name: "onClick",
@@ -224,7 +224,7 @@ export const WrapSingleChildEvent = () => {
   return (
     <div>
       <div>
-        <h3>I can wrap an event of a primitive value</h3>
+        <h3>I can wrap an event on aprimitive value</h3>
         <p style={{ color: "green" }}>
           This is N/A. Primitive values do not have any events.
         </p>
@@ -247,7 +247,7 @@ export const WrapSingleChildEvent = () => {
         <div>{htmlElementChildMessage}</div>
       </div>
       <div>
-        <h3>I can wrap an event (onExampleClick) of a component (JSX)</h3>
+        <h3>I can wrap an event (onExampleClick) on acomponent (JSX)</h3>
         <PropsChildrenParent
           storySubscribeEvent={{
             name: "onExampleClick",
@@ -263,7 +263,7 @@ export const WrapSingleChildEvent = () => {
         <div>{jsxChildMessage}</div>
       </div>
       <div>
-        <h3>I can wrap an event (onClick) of a render function</h3>
+        <h3>I can wrap an event (onClick) on arender function</h3>
         <PropsChildrenParent
           storySubscribeEvent={{
             name: "onClick",

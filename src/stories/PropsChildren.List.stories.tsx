@@ -298,3 +298,201 @@ export const UpdateProps = () => {
     </div>
   );
 };
+
+export const SubscribeToEvent = () => {
+  const [htmlElementMessage, setHtmlElementMessage] = useAutoClearString();
+  const [jsxMessage, setJsxMessage] = useAutoClearString();
+  const [renderMessage, setRenderMessage] = useAutoClearString();
+
+  return (
+    <div>
+      <div>
+        <h3>I can subscribe to an event on primitive values</h3>
+        <p style={{ color: "green" }}>
+          This is N/A. Primitive values do not have any events.
+        </p>
+      </div>
+      <div>
+        <h3>I can subscribe to an event (onChange) on HTML elements</h3>
+        <PropsChildrenParent
+          storySubscribeEvent={{
+            name: "onChange",
+            onEvent: (value: any) => setHtmlElementMessage("Changed!"),
+          }}
+        >
+          <input
+            type="text"
+            defaultValue="This is a plane (input)"
+            style={{ display: "block" }}
+          />
+          <input
+            type="text"
+            defaultValue="This is a train (input)"
+            style={{ display: "block" }}
+          />
+          <input
+            type="text"
+            defaultValue="This is an automobile (input)"
+            style={{ display: "block" }}
+          />
+        </PropsChildrenParent>
+        <div>{htmlElementMessage}</div>
+      </div>
+      <div>
+        <h3>
+          I can subscribe to an event (onExampleClick) on components (JSX).
+        </h3>
+        <PropsChildrenParent
+          storySubscribeEvent={{
+            name: "onExampleClick",
+            onEvent: (value: any) => setJsxMessage("Clicked!"),
+          }}
+        >
+          <PlaneComponent description="This is a plane" />
+          <TrainComponent description="This is a train" />
+          <AutomobileComponent description="This is an automobile" />
+        </PropsChildrenParent>
+        <div>{jsxMessage}</div>
+      </div>
+      <div>
+        <h3>I can subscribe to an event (onClick) on render functions</h3>
+        <PropsChildrenParent
+          storySubscribeEvent={{
+            name: "onClick",
+            onEvent: (value: any) => setRenderMessage("Clicked!"),
+          }}
+        >
+          {renderPlane({
+            title: "This is a plane",
+            description: "Hover for the tooltip",
+          })}
+          {renderTrain({
+            title: "This is a plane",
+            description: "Hover for the tooltip",
+          })}
+          {renderAutomobile({
+            title: "This is a plane",
+            description: "Hover for the tooltip",
+          })}
+        </PropsChildrenParent>
+        <div>{renderMessage}</div>
+      </div>
+    </div>
+  );
+};
+
+export const WrapSingleChildEvent = () => {
+  const [htmlElementMessage, setHtmlElementMessage] = useAutoClearString();
+  const [
+    htmlElementChildMessage,
+    setHtmlElementChildMessage,
+  ] = useAutoClearString();
+  const [jsxMessage, setJsxMessage] = useAutoClearString();
+  const [jsxChildMessage, setJsxChildMessage] = useAutoClearString();
+  const [renderMessage, setRenderMessage] = useAutoClearString();
+  const [renderChildMessage, setRenderChildMessage] = useAutoClearString();
+
+  const renderPlaneWithOnClick = (): React.ReactNode => {
+    return (
+      <div onClick={() => setRenderChildMessage("Plane Clicked!")}>
+        {renderPlane({ description: "This is a plane" })}
+      </div>
+    );
+  };
+
+  const renderTrainWithOnClick = (): React.ReactNode => {
+    return (
+      <div onClick={() => setRenderChildMessage("Train Clicked!")}>
+        {renderTrain({ description: "This is a train" })}
+      </div>
+    );
+  };
+
+  const renderAutomobileWithOnClick = (): React.ReactNode => {
+    return (
+      <div onClick={() => setRenderChildMessage("Automobile Clicked!")}>
+        {renderAutomobile({ description: "This is an automobile" })}
+      </div>
+    );
+  };
+
+  return (
+    <div>
+      <div>
+        <h3>I can wrap an event on primitive values</h3>
+        <p style={{ color: "green" }}>
+          This is N/A. Primitive values do not have any events.
+        </p>
+      </div>
+      <div>
+        <h3>I can wrap an event (onChange) on HTML elements</h3>
+        <PropsChildrenParent
+          storySubscribeEvent={{
+            name: "onChange",
+            onEvent: (value: any) => setHtmlElementMessage("Changed!"),
+          }}
+        >
+          <input
+            type="text"
+            defaultValue="This is a plane (input)"
+            onChange={() => setHtmlElementChildMessage("Plane Changed!")}
+            style={{ display: "block" }}
+          />
+          <input
+            type="text"
+            defaultValue="This is a train (input)"
+            onChange={() => setHtmlElementChildMessage("Train Changed!")}
+            style={{ display: "block" }}
+          />
+          <input
+            type="text"
+            defaultValue="This is an automobile (input)"
+            onChange={() => setHtmlElementChildMessage("Automobile Changed!")}
+            style={{ display: "block" }}
+          />
+        </PropsChildrenParent>
+        <div>{htmlElementMessage}</div>
+        <div>{htmlElementChildMessage}</div>
+      </div>
+      <div>
+        <h3>I can wrap an event (onExampleClick) on a components (JSX)</h3>
+        <PropsChildrenParent
+          storySubscribeEvent={{
+            name: "onExampleClick",
+            onEvent: (value: any) => setJsxMessage("Clicked!"),
+          }}
+        >
+          <PlaneComponent
+            description="This is a plane"
+            onExampleClick={() => setJsxChildMessage("Plane clicked!")}
+          />
+          <TrainComponent
+            description="This is a plane"
+            onExampleClick={() => setJsxChildMessage("Train clicked!")}
+          />
+          <AutomobileComponent
+            description="This is a plane"
+            onExampleClick={() => setJsxChildMessage("Automobile clicked!")}
+          />
+        </PropsChildrenParent>
+        <div>{jsxMessage}</div>
+        <div>{jsxChildMessage}</div>
+      </div>
+      <div>
+        <h3>I can wrap an event (onClick) on render functions</h3>
+        <PropsChildrenParent
+          storySubscribeEvent={{
+            name: "onClick",
+            onEvent: (value: any) => setRenderMessage("Clicked!"),
+          }}
+        >
+          {renderPlaneWithOnClick()}
+          {renderTrainWithOnClick()}
+          {renderAutomobileWithOnClick()}
+        </PropsChildrenParent>
+        <div>{renderMessage}</div>
+        <div>{renderChildMessage}</div>
+      </div>
+    </div>
+  );
+};
