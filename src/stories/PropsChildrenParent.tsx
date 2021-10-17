@@ -2,6 +2,8 @@ import React from "react";
 import "./spike.css";
 
 type StoryOptions = {
+  // a slot name of a child to render before the other children
+  storyMoveSlotFirst?: string;
   // a property name to read from the children, $ to read primitive value
   storyReadProp?: string;
   storyUpdateProp?: {
@@ -25,6 +27,7 @@ const isChildComponent = (children: any) => {
 export const PropsChildrenParent = (props: Props) => {
   const {
     children,
+    storyMoveSlotFirst,
     storyReadProp,
     storyUpdateProp,
     storySubscribeEvent,
@@ -71,13 +74,28 @@ export const PropsChildrenParent = (props: Props) => {
     }
   }
 
+  // ---- props.children reordering -----//
+
+  const orderChildren = (children: any[]): any[] => {
+    if (storyMoveSlotFirst) {
+      const newChildren = children.slice();
+      const index = children.findIndex(
+        (child) => child.props["slot"] === storyMoveSlotFirst
+      );
+      if (index !== -1) {
+        const child = children[index];
+        newChildren.splice(index, 1);
+        return [child, newChildren];
+      }
+    }
+    return children;
+  };
+
   // ---- props.children update -----//
 
   const renderChild = (child: any, i?: number) => {
     if (isChildComponent(child)) {
       const updatedProps: any = {};
-
-      const indexText = i ? `[${i}] ` : "";
 
       if (storyUpdateProp) {
         updatedProps[storyUpdateProp.name] = storyUpdateProp.onUpdate(
@@ -103,8 +121,10 @@ export const PropsChildrenParent = (props: Props) => {
 
   const renderChildren = () => {
     if (children && Array.isArray(children)) {
-      const anyChildren = children as any;
-      return anyChildren.map((child: any, i: number) => renderChild(child, i));
+      const orderedChildren = orderChildren(children as any[]);
+      return orderedChildren.map((child: any, i: number) =>
+        renderChild(child, i)
+      );
     }
 
     return renderChild(children);

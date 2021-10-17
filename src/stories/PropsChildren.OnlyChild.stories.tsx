@@ -1,12 +1,12 @@
 import React from "react";
 import { ComponentMeta } from "@storybook/react";
 import { PropsChildrenParent } from "./PropsChildrenParent";
-import { ExampleComponent } from "./ExampleComponent";
+import { PlaneComponent } from "./exampleComponents/PlaneComponent";
 import { useAutoClearString } from "./useAutoClearString";
-import { renderBus } from "./renderBus";
+import { renderPlane } from "./exampleComponents/renderVehicles";
 
 export default {
-  title: "Spike/props.children",
+  title: "Spike/props.children/only child",
   component: PropsChildrenParent,
 } as ComponentMeta<typeof PropsChildrenParent>;
 
@@ -15,24 +15,24 @@ export const SlotContent = () => {
     <div>
       <div>
         <h3>I can slot a primitive value.</h3>
-        <PropsChildrenParent>This is a bus (string)</PropsChildrenParent>
+        <PropsChildrenParent>This is a plane (string)</PropsChildrenParent>
       </div>
       <div>
         <h3>I can slot an HTML element.</h3>
         <PropsChildrenParent>
-          <label>This is a bus (label)</label>
+          <label>This is a plane (label)</label>
         </PropsChildrenParent>
       </div>
       <div>
         <h3>I can slot a component (JSX).</h3>
         <PropsChildrenParent>
-          <ExampleComponent description="This is a bus" />
+          <PlaneComponent description="This is a plane" />
         </PropsChildrenParent>
       </div>
       <div>
         <h3>I can slot a render function.</h3>
         <PropsChildrenParent>
-          {renderBus({ description: "This is a bus" })}
+          {renderPlane({ description: "This is a plane" })}
         </PropsChildrenParent>
       </div>
       <div>
@@ -51,19 +51,19 @@ export const ReadProps = () => {
       <div>
         <h3>I can read the props of a primitive value</h3>
         <PropsChildrenParent storyReadProp="$">
-          This is a bus (string)
+          This is a plane (string)
         </PropsChildrenParent>
       </div>
       <div>
         <h3>I can read the props of an HTML element.</h3>
         <PropsChildrenParent storyReadProp="defaultValue">
-          <input type="text" defaultValue="This is a bus (input)" />
+          <input type="text" defaultValue="This is a plane (input)" />
         </PropsChildrenParent>
       </div>
       <div>
         <h3>I can read the props of a component (JSX).</h3>
         <PropsChildrenParent storyReadProp="description">
-          <ExampleComponent description="This is a bus" />
+          <PlaneComponent description="This is a plane" />
         </PropsChildrenParent>
       </div>
       <div>
@@ -73,8 +73,8 @@ export const ReadProps = () => {
           props passed to the function.
         </p>
         <PropsChildrenParent storyReadProp="title">
-          {renderBus({
-            title: "This is a bus",
+          {renderPlane({
+            title: "This is a plane",
             description: "Hover for the tooltip",
           })}
         </PropsChildrenParent>
@@ -111,7 +111,7 @@ export const UpdateProps = () => {
             onUpdate: (value: any) => `Updated: ${value}`,
           }}
         >
-          <input type="text" defaultValue="This is a bus" />
+          <input type="text" defaultValue="This is a plane" />
         </PropsChildrenParent>
       </div>
       <div>
@@ -122,7 +122,7 @@ export const UpdateProps = () => {
             onUpdate: (value: any) => `Updated: ${value}`,
           }}
         >
-          <ExampleComponent description="This is a bus" />
+          <PlaneComponent description="This is a plane" />
         </PropsChildrenParent>
       </div>
       <div>
@@ -137,8 +137,8 @@ export const UpdateProps = () => {
             onUpdate: (value: any) => `Updated: ${value}`,
           }}
         >
-          {renderBus({
-            title: "This is a bus",
+          {renderPlane({
+            title: "This is a plane",
             description: "Hover for the tooltip",
           })}
         </PropsChildrenParent>
@@ -182,7 +182,7 @@ export const SubscribeToEvent = () => {
             onEvent: (value: any) => setJsxMessage("Clicked!"),
           }}
         >
-          <ExampleComponent description="This is a bus" />
+          <PlaneComponent description="This is a plane" />
         </PropsChildrenParent>
         <div>{jsxMessage}</div>
       </div>
@@ -194,7 +194,7 @@ export const SubscribeToEvent = () => {
             onEvent: (value: any) => setRenderMessage("Clicked!"),
           }}
         >
-          {renderBus({ description: "This is a bus" })}
+          {renderPlane({ description: "This is a plane" })}
         </PropsChildrenParent>
         <div>{renderMessage}</div>
       </div>
@@ -216,7 +216,7 @@ export const WrapSingleChildEvent = () => {
   const renderBusWithOnClick = (): React.ReactNode => {
     return (
       <div onClick={() => setRenderChildMessage("Child Clicked!")}>
-        {renderBus({ description: "This is a bus" })}
+        {renderPlane({ description: "This is a plane" })}
       </div>
     );
   };
@@ -254,8 +254,8 @@ export const WrapSingleChildEvent = () => {
             onEvent: (value: any) => setJsxMessage("Clicked!"),
           }}
         >
-          <ExampleComponent
-            description="This is a bus"
+          <PlaneComponent
+            description="This is a plane"
             onExampleClick={() => setJsxChildMessage("Child clicked!")}
           />
         </PropsChildrenParent>

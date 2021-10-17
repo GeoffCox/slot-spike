@@ -1,9 +1,8 @@
 import React from "react";
 import { ComponentMeta } from "@storybook/react";
 import { SlotParent } from "./SlotParent";
-import { ExampleComponent } from "./ExampleComponent";
-import { ShorthandRenderFunction } from "./slots/types";
-import { renderBus } from "./renderBus";
+import { PlaneComponent } from "./exampleComponents/PlaneComponent";
+import { renderPlane } from "./exampleComponents/renderVehicles";
 
 export default {
   title: "Spike/slot attributes",
@@ -15,16 +14,16 @@ export const SlotContent = () => {
     <div>
       <div>
         <h3>I can slot a primitive value.</h3>
-        <SlotParent content="This is a bus (string)" />
+        <SlotParent content="This is a plane (string)" />
       </div>
       <div>
         <h3>I can slot an HTML element.</h3>
-        <SlotParent content={<label>This is a bus (label)</label>} />
+        <SlotParent content={<label>This is a plane (label)</label>} />
       </div>
       <div>
         <h3>I can slot a component (JSX).</h3>
         <SlotParent
-          content={<ExampleComponent description="This is a bus" />}
+          content={<PlaneComponent description="This is a plane" />}
         />
       </div>
       <div>
@@ -32,12 +31,14 @@ export const SlotContent = () => {
         {/* //Strange to have to pass the function as children rather than directly.
         //Possible issue with the way getShorthand works */}
         <SlotParent
-          content={{ children: renderBus({ description: "This is a bus" }) }}
+          content={{
+            children: renderPlane({ description: "This is a plane" }),
+          }}
         />
       </div>
       <div>
         <h3>I can slot component props.</h3>
-        <SlotParent exampleComponent={{ description: "This is a bus" }} />
+        <SlotParent exampleComponent={{ description: "This is a plane" }} />
       </div>
     </div>
   );
@@ -48,7 +49,7 @@ export const ReadSingleChildProps = () => {
     <div>
       <p>I can read the props of a child.</p>
       <SlotParent
-        exampleComponent={{ description: "This is a bus" }}
+        exampleComponent={{ description: "This is a plane" }}
         storyReadProps
       />
     </div>
@@ -60,7 +61,7 @@ export const UpdateSingleChildProps = () => {
     <div>
       <p>I can modify the props of a child.</p>
       <SlotParent
-        exampleComponent={{ description: "This is a bus" }}
+        exampleComponent={{ description: "This is a plane" }}
         storyUpdateProps
       />
     </div>
@@ -72,7 +73,7 @@ export const SubscribeToSingleChildEvent = () => {
     <div>
       <p>I can subscribe to an event (callback) of a child.</p>
       <SlotParent
-        exampleComponent={{ description: "This is a bus" }}
+        exampleComponent={{ description: "This is a plane" }}
         storyHandleClick
       />
     </div>
@@ -99,7 +100,7 @@ This doesn't happen when you pass props.
 This makes the state shape vary depending on how the slot is filled in!
 
 <ExampleComponent
-            description="This is a bus"
+            description="This is a plane"
             onExampleClick={() => setClickMessage("Child clicked!")}
           />
 */
@@ -109,7 +110,7 @@ This makes the state shape vary depending on how the slot is filled in!
       <p>I can wrap to an event (callback) of a child.</p>
       <SlotParent
         exampleComponent={{
-          description: "This is a bus",
+          description: "This is a plane",
           onExampleClick: () => setClickMessage("Child clicked!"),
         }}
         storyHandleClick

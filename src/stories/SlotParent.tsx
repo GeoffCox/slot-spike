@@ -9,12 +9,15 @@ import {
   IntrinsicShorthandProps,
   ObjectShorthandProps,
 } from "./slots/types";
-import { ExampleComponent, ExampleComponentProps } from "./ExampleComponent";
+import {
+  PlaneComponent,
+  PlaneComponentProps,
+} from "./exampleComponents/PlaneComponent";
 
 type Slots = {
   root: IntrinsicShorthandProps<"div">;
   content?: ObjectShorthandProps<React.HTMLAttributes<HTMLElement>>;
-  exampleComponent?: ObjectShorthandProps<ExampleComponentProps>;
+  exampleComponent?: ObjectShorthandProps<PlaneComponentProps>;
 };
 
 type StoryOptions = {
@@ -57,7 +60,7 @@ export const SlotParent = (props: Props) => {
     components: {
       root: "div",
       content: "div",
-      exampleComponent: ExampleComponent,
+      exampleComponent: PlaneComponent,
     },
 
     root: getNativeElementProps("div", { ...props }),
