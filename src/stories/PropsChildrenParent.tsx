@@ -2,7 +2,7 @@ import React from "react";
 import "./spike.css";
 
 type StoryOptions = {
-  // a slot name of a child to render before the other children
+  // a slot name of a child to render before the other children, index number to reorder a primitive value
   storyMoveSlotFirst?: string;
   // a property name to read from the children, $ to read primitive value
   storyReadProp?: string;
@@ -79,10 +79,13 @@ export const PropsChildrenParent = (props: Props) => {
   const orderChildren = (children: any[]): any[] => {
     if (storyMoveSlotFirst) {
       const newChildren = children.slice();
-      const index = children.findIndex(
-        (child) => child.props["slot"] === storyMoveSlotFirst
-      );
-      if (index !== -1) {
+      let index = parseInt(storyMoveSlotFirst);
+      if (!index) {
+        index = children.findIndex(
+          (child) => child.props["slot"] === storyMoveSlotFirst
+        );
+      }
+      if (index !== -1 && index < children.length) {
         const child = children[index];
         newChildren.splice(index, 1);
         return [child, newChildren];
@@ -138,8 +141,12 @@ export const PropsChildrenParent = (props: Props) => {
         <div>
           <div>Property: {storyReadProp}</div>
           <div>
-            {readProps.map((description) => {
-              return <div>{description}</div>;
+            {readProps.map((propValue, i, arr) => {
+              return (
+                <div>
+                  {arr.length > 1 && `[${i}]`} {propValue}
+                </div>
+              );
             })}
           </div>
         </div>

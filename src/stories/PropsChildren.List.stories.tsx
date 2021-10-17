@@ -69,17 +69,20 @@ export const SlotContent = () => {
   );
 };
 
-export const NamedSlotContent = () => {
+export const NamedSlots = () => {
   return (
     <div>
       <div>
-        <h3>I can slot primitive values.</h3>
-        <PropsChildrenParent>
+        <h3>I can reorder primitive values based on position.</h3>
+        <p style={{ color: "green" }}>
+          This moves the 5th element to be first.
+        </p>
+        <PropsChildrenParent storyMoveSlotFirst="4">
           {[
+            " | ",
             "This is a plane (string)",
             " | ",
             "This is a train (string)",
-            " | ",
             "This is an automobile (string)",
           ]}
         </PropsChildrenParent>
@@ -116,8 +119,8 @@ export const NamedSlotContent = () => {
       <div>
         <h3>I can reorder render functions with a named slot.</h3>
         <PropsChildrenParent storyMoveSlotFirst="automobile">
-          {renderPlane({ description: "This is a plane" })}
-          {renderTrain({ description: "This is a train" })}
+          {renderPlane({ description: "This is a plane", slot: "plane" })}
+          {renderTrain({ description: "This is a train", slot: "train" })}
           {renderAutomobile({
             description: "This is an automobile",
             slot: "automobile",
@@ -126,6 +129,74 @@ export const NamedSlotContent = () => {
       </div>
       <div>
         <h3>I can slot component props.</h3>
+        <p style={{ color: "green" }}>
+          This is N/A for the props.children approach.
+        </p>
+      </div>
+    </div>
+  );
+};
+
+export const ReadProps = () => {
+  return (
+    <div>
+      <div>
+        <h3>I can read the props of a primitive value</h3>
+        <PropsChildrenParent storyReadProp="$">
+          This is a plane (string)
+        </PropsChildrenParent>
+      </div>
+      <div>
+        <h3>I can read the props of HTML elements.</h3>
+        <PropsChildrenParent storyReadProp="defaultValue">
+          <input
+            type="text"
+            defaultValue="This is a plane (input)"
+            style={{ display: "block" }}
+          />
+          <input
+            type="text"
+            defaultValue="This is a train (input)"
+            style={{ display: "block" }}
+          />
+          <input
+            type="text"
+            defaultValue="This is an automobile (input)"
+            style={{ display: "block" }}
+          />
+        </PropsChildrenParent>
+      </div>
+      <div>
+        <h3>I can read the props of components (JSX).</h3>
+        <PropsChildrenParent storyReadProp="description">
+          <PlaneComponent description="This is a plane" />
+          <TrainComponent description="This is a train" />
+          <AutomobileComponent description="This is an automobile" />
+        </PropsChildrenParent>
+      </div>
+      <div>
+        <h3>I can read the props of a render function.</h3>
+        <p style={{ color: "green" }}>
+          For props.children, this reads the props of the root element, not the
+          props passed to the function.
+        </p>
+        <PropsChildrenParent storyReadProp="title">
+          {renderPlane({
+            title: "This is a plane",
+            description: "Hover for the tooltip",
+          })}
+          {renderTrain({
+            title: "This is a plane",
+            description: "Hover for the tooltip",
+          })}
+          {renderAutomobile({
+            title: "This is a plane",
+            description: "Hover for the tooltip",
+          })}
+        </PropsChildrenParent>
+      </div>
+      <div>
+        <h3>I can read the slotted component props.</h3>
         <p style={{ color: "green" }}>
           This is N/A for the props.children approach.
         </p>

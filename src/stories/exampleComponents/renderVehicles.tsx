@@ -3,7 +3,7 @@ import * as React from "react";
 type Props = {
   title?: string;
   description: string;
-  slot: string;
+  slot?: string;
   [key: string]: any;
 };
 
