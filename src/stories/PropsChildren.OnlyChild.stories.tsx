@@ -14,29 +14,29 @@ export const SlotContent = () => {
   return (
     <div>
       <div>
-        <h3>I can slot a primitive value.</h3>
+        <h3>I can slot a primitive value</h3>
         <PropsChildrenParent>This is a plane (string)</PropsChildrenParent>
       </div>
       <div>
-        <h3>I can slot an HTML element.</h3>
+        <h3>I can slot an HTML element</h3>
         <PropsChildrenParent>
           <label>This is a plane (label)</label>
         </PropsChildrenParent>
       </div>
       <div>
-        <h3>I can slot a component (JSX).</h3>
+        <h3>I can slot a component (JSX)</h3>
         <PropsChildrenParent>
           <PlaneComponent description="This is a plane" />
         </PropsChildrenParent>
       </div>
       <div>
-        <h3>I can slot a render function.</h3>
+        <h3>I can slot a render function</h3>
         <PropsChildrenParent>
           {renderPlane({ description: "This is a plane" })}
         </PropsChildrenParent>
       </div>
       <div>
-        <h3>I can slot component props.</h3>
+        <h3>I can slot component props</h3>
         <p style={{ color: "green" }}>
           This is N/A for the props.children approach.
         </p>
@@ -49,25 +49,25 @@ export const ReadProps = () => {
   return (
     <div>
       <div>
-        <h3>I can read the props of a primitive value</h3>
+        <h3>I can read primitive values</h3>
         <PropsChildrenParent storyReadProp="$">
           This is a plane (string)
         </PropsChildrenParent>
       </div>
       <div>
-        <h3>I can read the props of an HTML element.</h3>
+        <h3>I can read the props of an HTML element</h3>
         <PropsChildrenParent storyReadProp="defaultValue">
           <input type="text" defaultValue="This is a plane (input)" />
         </PropsChildrenParent>
       </div>
       <div>
-        <h3>I can read the props of a component (JSX).</h3>
+        <h3>I can read the props of a component (JSX)</h3>
         <PropsChildrenParent storyReadProp="description">
           <PlaneComponent description="This is a plane" />
         </PropsChildrenParent>
       </div>
       <div>
-        <h3>I can read the props of a render function.</h3>
+        <h3>I can read the props of a render function</h3>
         <p style={{ color: "green" }}>
           For props.children, this reads the props of the root element, not the
           props passed to the function.
@@ -80,7 +80,7 @@ export const ReadProps = () => {
         </PropsChildrenParent>
       </div>
       <div>
-        <h3>I can read the slotted component props.</h3>
+        <h3>I can read the slotted component props</h3>
         <p style={{ color: "green" }}>
           This is N/A for the props.children approach.
         </p>
@@ -104,7 +104,7 @@ export const UpdateProps = () => {
         </PropsChildrenParent>
       </div>
       <div>
-        <h3>I can modify props of an HTML element.</h3>
+        <h3>I can modify props of an HTML element</h3>
         <PropsChildrenParent
           storyUpdateProp={{
             name: "defaultValue",
@@ -115,7 +115,7 @@ export const UpdateProps = () => {
         </PropsChildrenParent>
       </div>
       <div>
-        <h3>I can modify props of a component (JSX).</h3>
+        <h3>I can modify props of a component (JSX)</h3>
         <PropsChildrenParent
           storyUpdateProp={{
             name: "description",
@@ -126,7 +126,7 @@ export const UpdateProps = () => {
         </PropsChildrenParent>
       </div>
       <div>
-        <h3>I can modify the props of a render function.</h3>
+        <h3>I can modify the props of a render function</h3>
         <p style={{ color: "green" }}>
           For props.children, this reads the props of the root element, not the
           props passed to the function.
@@ -155,7 +155,7 @@ export const SubscribeToEvent = () => {
   return (
     <div>
       <div>
-        <h3>I can subscribe to an event of a primitive value.</h3>
+        <h3>I can subscribe to an event of a primitive value</h3>
         <p style={{ color: "green" }}>
           This is N/A. Primitive values do not have any events.
         </p>
@@ -187,7 +187,7 @@ export const SubscribeToEvent = () => {
         <div>{jsxMessage}</div>
       </div>
       <div>
-        <h3>I can subscribe to an event (onClick) of a render function.</h3>
+        <h3>I can subscribe to an event (onClick) of a render function</h3>
         <PropsChildrenParent
           storySubscribeEvent={{
             name: "onClick",
@@ -224,7 +224,7 @@ export const WrapSingleChildEvent = () => {
   return (
     <div>
       <div>
-        <h3>I can wrap an event of a primitive value.</h3>
+        <h3>I can wrap an event of a primitive value</h3>
         <p style={{ color: "green" }}>
           This is N/A. Primitive values do not have any events.
         </p>
@@ -247,7 +247,7 @@ export const WrapSingleChildEvent = () => {
         <div>{htmlElementChildMessage}</div>
       </div>
       <div>
-        <h3>I can wrap an event (onExampleClick) of a component (JSX).</h3>
+        <h3>I can wrap an event (onExampleClick) of a component (JSX)</h3>
         <PropsChildrenParent
           storySubscribeEvent={{
             name: "onExampleClick",
@@ -263,7 +263,7 @@ export const WrapSingleChildEvent = () => {
         <div>{jsxChildMessage}</div>
       </div>
       <div>
-        <h3>I can wrap an event (onClick) of a render function.</h3>
+        <h3>I can wrap an event (onClick) of a render function</h3>
         <PropsChildrenParent
           storySubscribeEvent={{
             name: "onClick",
@@ -323,7 +323,7 @@ export const WrapSingleChildEvent = () => {
 
 // // export const SingleChild = () => (
 // //   <div>
-// //     <h3>I can use props.children to transpose a single child.</h3>
+// //     <h3>I can use props.children to transpose a single child</h3>
 // //     <BasicParent title="Hello Child">
 // //       <div>Single child</div>
 // //     </BasicParent>

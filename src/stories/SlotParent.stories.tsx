@@ -13,21 +13,21 @@ export const SlotContent = () => {
   return (
     <div>
       <div>
-        <h3>I can slot a primitive value.</h3>
+        <h3>I can slot a primitive value</h3>
         <SlotParent content="This is a plane (string)" />
       </div>
       <div>
-        <h3>I can slot an HTML element.</h3>
+        <h3>I can slot an HTML element</h3>
         <SlotParent content={<label>This is a plane (label)</label>} />
       </div>
       <div>
-        <h3>I can slot a component (JSX).</h3>
+        <h3>I can slot a component (JSX)</h3>
         <SlotParent
           content={<PlaneComponent description="This is a plane" />}
         />
       </div>
       <div>
-        <h3>I can slot a render function.</h3>
+        <h3>I can slot a render function</h3>
         {/* //Strange to have to pass the function as children rather than directly.
         //Possible issue with the way getShorthand works */}
         <SlotParent
@@ -37,7 +37,7 @@ export const SlotContent = () => {
         />
       </div>
       <div>
-        <h3>I can slot component props.</h3>
+        <h3>I can slot component props</h3>
         <SlotParent exampleComponent={{ description: "This is a plane" }} />
       </div>
     </div>
