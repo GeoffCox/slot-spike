@@ -429,3 +429,456 @@ export const NamedSlots = () => {
     </div>
   );
 };
+
+export const ReadProps = () => {
+  return (
+    <div>
+      <div>
+        <h3>I can read from a hierarchy of primitive values</h3>
+        <p style={{ color: "green" }}>
+          This is N/A since primitives don't have children.
+        </p>
+      </div>
+      <div>
+        <h3>I can read the props of a hierarchy of HTML elements</h3>
+        <PropsChildrenParent storyReadProp="defaultValue">
+          <div>
+            <div>
+              <label>Planes</label>
+              <div style={{ marginLeft: "10px" }}>
+                <label style={{ display: "block" }}>
+                  This is plane 1 (label)
+                </label>
+                <input
+                  type="text"
+                  defaultValue="This is plane 2 (input)"
+                  style={{ display: "block" }}
+                />
+              </div>
+            </div>
+            <div>
+              <label>Trains</label>
+              <div style={{ marginLeft: "10px" }}>
+                <label style={{ display: "block" }}>
+                  This is train 1 (label)
+                </label>
+                <div style={{ marginLeft: "10px" }}>
+                  <label style={{ display: "block" }}>
+                    This is train 1-A (label)
+                  </label>
+                  <label style={{ display: "block" }} slot="train1B">
+                    This is train 1-B (label)
+                  </label>
+
+                  <div style={{ marginLeft: "10px" }}>
+                    <input
+                      type="text"
+                      defaultValue="This is train 1-B-A (input)"
+                      style={{ display: "block" }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <label>Automobiles</label>
+              <div style={{ marginLeft: "10px" }}>
+                <div slot="classicAutos">
+                  <label>Classic</label>
+                  <div style={{ marginLeft: "10px" }}>
+                    <input
+                      type="text"
+                      defaultValue="This is automobile 1 (input)"
+                      style={{ display: "block" }}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label>Modern</label>
+                  <div style={{ marginLeft: "10px" }}>
+                    <label style={{ display: "block" }}>
+                      This is automobile 2 (label)
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </PropsChildrenParent>
+      </div>
+      <div>
+        <h3>I can read the props of a hierarchy components (JSX)</h3>
+        <PropsChildrenParent storyReadProp="description">
+          <VehicleContainerComponent description="Planes">
+            <PlaneComponent description="This is plane 1" />
+            <PlaneComponent description="This is plane 2" slot="plane2" />
+          </VehicleContainerComponent>
+          <VehicleContainerComponent description="Trains">
+            <TrainComponent description="This is train 1" />
+            <VehicleContainerComponent>
+              <TrainComponent description="This is train 1-A" />
+              <TrainComponent description="This is train 1-B" slot="train1B" />
+              <VehicleContainerComponent>
+                <TrainComponent description="This is train 1-B-A" />
+              </VehicleContainerComponent>
+            </VehicleContainerComponent>
+          </VehicleContainerComponent>
+          <VehicleContainerComponent description="Automobiles">
+            <VehicleContainerComponent
+              description="Classic"
+              slot="classicAutos"
+            >
+              <AutomobileComponent description="This is automobile 1" />
+            </VehicleContainerComponent>
+            <VehicleContainerComponent description="Modern">
+              <AutomobileComponent description="This is automobile 2" />
+            </VehicleContainerComponent>
+          </VehicleContainerComponent>
+        </PropsChildrenParent>
+      </div>
+      <div>
+        <h3>I can read the props of render functions</h3>
+        <p style={{ color: "green" }}>
+          For props.children, this reads the props of the root element, not the
+          props passed to the function.
+        </p>
+        <PropsChildrenParent storyReadProp="title">
+          {renderVehicleContainer({
+            description: "Planes",
+            renderChild: () => {
+              return (
+                <>
+                  {renderPlane({ description: "This is plane 1" })}
+                  {renderPlane({
+                    title: "This is plane 2",
+                    description: "This is plane 2 (hover for title)",
+                    slot: "plane2",
+                  })}
+                </>
+              );
+            },
+          })}
+          {renderVehicleContainer({
+            description: "Trains",
+            renderChild: () => {
+              return (
+                <>
+                  {renderVehicleContainer({
+                    renderChild: () => {
+                      return (
+                        <>
+                          {renderTrain({ description: "This is train 1" })}
+                          {renderVehicleContainer({
+                            renderChild: () => {
+                              return (
+                                <>
+                                  {renderTrain({
+                                    description: "This is train 1-A",
+                                  })}
+                                  {renderTrain({
+                                    title: "This is train 1-B",
+                                    description:
+                                      "This is train 1-B  (hover for title)",
+                                    slot: "train1B",
+                                  })}
+                                  {renderVehicleContainer({
+                                    renderChild: () => {
+                                      return (
+                                        <>
+                                          {renderTrain({
+                                            description: "This is train 1-B-A",
+                                          })}
+                                        </>
+                                      );
+                                    },
+                                  })}
+                                </>
+                              );
+                            },
+                          })}
+                        </>
+                      );
+                    },
+                  })}
+                </>
+              );
+            },
+          })}
+          {renderVehicleContainer({
+            description: "Automobiles",
+            renderChild: () => {
+              return (
+                <>
+                  {renderVehicleContainer({
+                    description: "Classic",
+                    slot: "classicAutos",
+                    renderChild: () => {
+                      return (
+                        <>
+                          {renderAutomobile({
+                            title: "This is automobile 1",
+                            description:
+                              "This is automobile 1 (hover for title)",
+                          })}
+                        </>
+                      );
+                    },
+                  })}
+                  {renderVehicleContainer({
+                    description: "Modern",
+                    renderChild: () => {
+                      return (
+                        <>
+                          {renderAutomobile({
+                            description: "This is automobile 2",
+                          })}
+                        </>
+                      );
+                    },
+                  })}
+                </>
+              );
+            },
+          })}
+        </PropsChildrenParent>
+      </div>
+      <div>
+        <h3>I can read the slotted component props</h3>
+        <p style={{ color: "green" }}>
+          This is N/A for the props.children approach.
+        </p>
+      </div>
+    </div>
+  );
+};
+
+export const UpdateProps = () => {
+  return (
+    <div>
+      <div>
+        <h3>I can modify a hierarchy of primitive values</h3>
+        <p style={{ color: "green" }}>
+          This is N/A since primitives don't have children.
+        </p>
+      </div>
+      <div>
+        <h3>I can modify props of a hierarchy HTML elements</h3>
+        <PropsChildrenParent
+          storyUpdateProp={{
+            name: "defaultValue",
+            onUpdate: (value: any) => `Updated: ${value}`,
+          }}
+        >
+          <div>
+            <div>
+              <label>Planes</label>
+              <div style={{ marginLeft: "10px" }}>
+                <label style={{ display: "block" }}>
+                  This is plane 1 (label)
+                </label>
+                <input
+                  type="text"
+                  defaultValue="This is plane 2 (input)"
+                  style={{ display: "block" }}
+                />
+              </div>
+            </div>
+            <div>
+              <label>Trains</label>
+              <div style={{ marginLeft: "10px" }}>
+                <label style={{ display: "block" }}>
+                  This is train 1 (label)
+                </label>
+                <div style={{ marginLeft: "10px" }}>
+                  <label style={{ display: "block" }}>
+                    This is train 1-A (label)
+                  </label>
+                  <label style={{ display: "block" }} slot="train1B">
+                    This is train 1-B (label)
+                  </label>
+
+                  <div style={{ marginLeft: "10px" }}>
+                    <input
+                      type="text"
+                      defaultValue="This is train 1-B-A (input)"
+                      style={{ display: "block" }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <label>Automobiles</label>
+              <div style={{ marginLeft: "10px" }}>
+                <div slot="classicAutos">
+                  <label>Classic</label>
+                  <div style={{ marginLeft: "10px" }}>
+                    <input
+                      type="text"
+                      defaultValue="This is automobile 1 (input)"
+                      style={{ display: "block" }}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label>Modern</label>
+                  <div style={{ marginLeft: "10px" }}>
+                    <label style={{ display: "block" }}>
+                      This is automobile 2 (label)
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </PropsChildrenParent>
+      </div>
+      <div>
+        <h3>I can modify props of a component (JSX)</h3>
+        <PropsChildrenParent
+          storyUpdateProp={{
+            name: "description",
+            onUpdate: (value: any) => `Updated: ${value}`,
+          }}
+        >
+          <VehicleContainerComponent description="Planes">
+            <PlaneComponent description="This is plane 1" />
+            <PlaneComponent description="This is plane 2" slot="plane2" />
+          </VehicleContainerComponent>
+          <VehicleContainerComponent description="Trains">
+            <TrainComponent description="This is train 1" />
+            <VehicleContainerComponent>
+              <TrainComponent description="This is train 1-A" />
+              <TrainComponent description="This is train 1-B" slot="train1B" />
+              <VehicleContainerComponent>
+                <TrainComponent description="This is train 1-B-A" />
+              </VehicleContainerComponent>
+            </VehicleContainerComponent>
+          </VehicleContainerComponent>
+          <VehicleContainerComponent description="Automobiles">
+            <VehicleContainerComponent
+              description="Classic"
+              slot="classicAutos"
+            >
+              <AutomobileComponent description="This is automobile 1" />
+            </VehicleContainerComponent>
+            <VehicleContainerComponent description="Modern">
+              <AutomobileComponent description="This is automobile 2" />
+            </VehicleContainerComponent>
+          </VehicleContainerComponent>
+        </PropsChildrenParent>
+      </div>
+      <div>
+        <h3>I can modify the props of a render function</h3>
+        <p style={{ color: "green" }}>
+          For props.children, this reads the props of the root element, not the
+          props passed to the function.
+        </p>
+        <PropsChildrenParent
+          storyUpdateProp={{
+            name: "title",
+            onUpdate: (value: any) => `Updated: ${value}`,
+          }}
+        >
+          {renderVehicleContainer({
+            description: "Planes",
+            renderChild: () => {
+              return (
+                <>
+                  {renderPlane({ description: "This is plane 1" })}
+                  {renderPlane({
+                    title: "This is plane 2",
+                    description: "This is plane 2 (hover for title)",
+                    slot: "plane2",
+                  })}
+                </>
+              );
+            },
+          })}
+          {renderVehicleContainer({
+            description: "Trains",
+            renderChild: () => {
+              return (
+                <>
+                  {renderVehicleContainer({
+                    renderChild: () => {
+                      return (
+                        <>
+                          {renderTrain({ description: "This is train 1" })}
+                          {renderVehicleContainer({
+                            renderChild: () => {
+                              return (
+                                <>
+                                  {renderTrain({
+                                    description: "This is train 1-A",
+                                  })}
+                                  {renderTrain({
+                                    title: "This is train 1-B",
+                                    description:
+                                      "This is train 1-B  (hover for title)",
+                                    slot: "train1B",
+                                  })}
+                                  {renderVehicleContainer({
+                                    renderChild: () => {
+                                      return (
+                                        <>
+                                          {renderTrain({
+                                            description: "This is train 1-B-A",
+                                          })}
+                                        </>
+                                      );
+                                    },
+                                  })}
+                                </>
+                              );
+                            },
+                          })}
+                        </>
+                      );
+                    },
+                  })}
+                </>
+              );
+            },
+          })}
+          {renderVehicleContainer({
+            description: "Automobiles",
+            renderChild: () => {
+              return (
+                <>
+                  {renderVehicleContainer({
+                    description: "Classic",
+                    slot: "classicAutos",
+                    renderChild: () => {
+                      return (
+                        <>
+                          {renderAutomobile({
+                            title: "This is automobile 1",
+                            description:
+                              "This is automobile 1 (hover for title)",
+                          })}
+                        </>
+                      );
+                    },
+                  })}
+                  {renderVehicleContainer({
+                    description: "Modern",
+                    renderChild: () => {
+                      return (
+                        <>
+                          {renderAutomobile({
+                            description: "This is automobile 2",
+                          })}
+                        </>
+                      );
+                    },
+                  })}
+                </>
+              );
+            },
+          })}
+        </PropsChildrenParent>
+      </div>
+    </div>
+  );
+};

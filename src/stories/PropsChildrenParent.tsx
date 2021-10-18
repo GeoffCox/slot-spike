@@ -62,7 +62,7 @@ export const PropsChildrenParent = (props: Props) => {
 
   let readProps: string[] = [];
 
-  const readChildProps = (children: any, index?: number, depth?: number) => {
+  const readChildProps = (children: any, index: number, depth: number) => {
     if (storyReadProp && storyReadProp.length > 0) {
       if (Array.isArray(children)) {
         const anyChildren = children as any[];
@@ -71,49 +71,24 @@ export const PropsChildrenParent = (props: Props) => {
         });
       } else if (isSingleChild(children)) {
         const singleChild = children as any;
-        readProps.push(
-          `${" ".repeat(depth ?? 0)}[${index}]: ${
-            singleChild.props[storyReadProp]
-          }`
-        );
+
+        if (singleChild.props[storyReadProp]) {
+          readProps.push(
+            `${"_".repeat(depth ?? 0)}[${index}]: ${
+              singleChild.props[storyReadProp]
+            }`
+          );
+        }
         if (singleChild.props?.children) {
-          readChildProps(singleChild.props?.children, 0, depth ? depth + 1 : 0);
+          readChildProps(singleChild.props?.children, index, depth + 1);
         }
       } else if (storyReadProp === "$") {
-        readProps.push(`${" ".repeat(depth ?? 0)}[${index}]: ${children}`);
-      } else {
-        readProps.push(
-          "Could not read from children. Children is not a component, primitive, or array."
-        );
+        readProps.push(`${"_".repeat(depth ?? 0)}[${index}]: ${children}`);
       }
     }
   };
 
-  readChildProps(children);
-
-  // if (storyReadProp && storyReadProp.length > 0 && children) {
-  //   if (Array.isArray(children)) {
-  //     const anyChildren = children as any;
-  //     anyChildren.forEach((child: any) => {
-  //       if (isSingleChild(child)) {
-  //         readProps.push(`Read from child: ${child.props[storyReadProp]}`);
-  //       } else if (storyReadProp === "$") {
-  //         readProps.push(`Read primitive from child: ${child}`);
-  //       } else {
-  //         readProps.push("Could not read from child. Child is not a component");
-  //       }
-  //     });
-  //   } else if (isSingleChild(children)) {
-  //     const singleChild = children as any;
-  //     readProps.push(`Read from child: ${singleChild.props[storyReadProp]}`);
-  //   } else if (storyReadProp === "$") {
-  //     readProps.push(`Read primitive from child: ${children}`);
-  //   } else {
-  //     readProps.push(
-  //       "Could not read from children. Children is not a component, primitive, or array"
-  //     );
-  //   }
-  // }
+  readChildProps(children, 0, 0);
 
   // ---- props.children reordering -----//
 
@@ -204,45 +179,76 @@ export const PropsChildrenParent = (props: Props) => {
 
   // ---- props.children update -----//
 
-  const renderChild = (child: any, i?: number) => {
-    if (isSingleChild(child)) {
-      const updatedProps: any = {};
+  const updateProps = (parent: any): any => {
+    if (storyUpdateProp && isSingleChild(parent)) {
+      let updatedProps: any = {};
 
-      if (storyUpdateProp) {
+      if (parent.props && parent.props[storyUpdateProp.name]) {
         updatedProps[storyUpdateProp.name] = storyUpdateProp.onUpdate(
-          child.props[storyUpdateProp.name]
+          parent.props[storyUpdateProp.name]
         );
       }
 
-      if (storySubscribeEvent) {
-        const originalEvent = child.props[storySubscribeEvent.name];
-        updatedProps[storySubscribeEvent.name] = (e: any) => {
-          storySubscribeEvent.onEvent(e);
-          originalEvent && originalEvent();
-        };
+      if (parent.props.children) {
+        if (Array.isArray(parent.props.children)) {
+          updatedProps.children = parent.props.children
+            .filter(Boolean)
+            .map((child: any) => updateProps(child));
+        } else if (isSingleChild(parent.props.children)) {
+          updatedProps.children = updateProps(parent.props.children);
+        }
       }
 
-      return React.cloneElement(child, updatedProps);
+      return React.cloneElement(parent, updatedProps);
     } else if (storyUpdateProp?.name === "$") {
-      return storyUpdateProp.onUpdate(child);
+      return storyUpdateProp.onUpdate(parent);
     }
 
-    return <>{child}</>;
+    return parent;
   };
 
-  const renderChildren = () => {
-    if (children && Array.isArray(children)) {
-      const orderedChildren = orderChildren(children as any[]);
-      const groupedChildren = groupArrayOfChildren(orderedChildren);
-      return groupedChildren.map((child: any, i: number) =>
-        renderChild(child, i)
-      );
+  const subscribeToEvents = (parent: any): any => {
+    if (storySubscribeEvent && parent?.props) {
+      let updatedProps: any = {};
+
+      const originalEvent = parent.props[storySubscribeEvent.name];
+      updatedProps[storySubscribeEvent.name] = (e: any) => {
+        storySubscribeEvent.onEvent(e);
+        originalEvent && originalEvent();
+      };
+
+      if (parent.props.children && Array.isArray(parent.props.children)) {
+        updatedProps.children = parent.props.children
+          .filter(Boolean)
+          .map((child: any) => subscribeToEvents(child));
+      }
+
+      return React.cloneElement(parent, updatedProps);
     }
 
-    return renderChild(groupChildren(children));
+    return parent;
   };
 
   // ---- render -----//
+
+  const renderChildren = () => {
+    if (children) {
+      if (Array.isArray(children)) {
+        let updatedChildren = orderChildren(children as any[]);
+        updatedChildren = groupArrayOfChildren(updatedChildren);
+        updatedChildren = updatedChildren.map(updateProps);
+        updatedChildren = updatedChildren.map(subscribeToEvents);
+
+        return <>{updatedChildren}</>;
+      } else {
+        let updatedChildren = groupChildren(children as any);
+        updatedChildren = updateProps(updatedChildren);
+        updatedChildren = subscribeToEvents(updatedChildren);
+        return <>{updatedChildren}</>;
+      }
+    }
+  };
+
   return (
     <div className="parent">
       <div className="child">{renderChildren()}</div>
