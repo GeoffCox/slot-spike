@@ -62,29 +62,58 @@ export const PropsChildrenParent = (props: Props) => {
 
   let readProps: string[] = [];
 
-  if (storyReadProp && storyReadProp.length > 0 && children) {
-    if (Array.isArray(children)) {
-      const anyChildren = children as any;
-      anyChildren.forEach((child: any) => {
-        if (isSingleChild(child)) {
-          readProps.push(`Read from child: ${child.props[storyReadProp]}`);
-        } else if (storyReadProp === "$") {
-          readProps.push(`Read primitive from child: ${child}`);
-        } else {
-          readProps.push("Could not read from child. Child is not a component");
+  const readChildProps = (children: any, index?: number, depth?: number) => {
+    if (storyReadProp && storyReadProp.length > 0) {
+      if (Array.isArray(children)) {
+        const anyChildren = children as any[];
+        anyChildren.forEach((child: any, i: number) => {
+          readChildProps(child, i, depth);
+        });
+      } else if (isSingleChild(children)) {
+        const singleChild = children as any;
+        readProps.push(
+          `${" ".repeat(depth ?? 0)}[${index}]: ${
+            singleChild.props[storyReadProp]
+          }`
+        );
+        if (singleChild.props?.children) {
+          readChildProps(singleChild.props?.children, 0, depth ? depth + 1 : 0);
         }
-      });
-    } else if (isSingleChild(children)) {
-      const singleChild = children as any;
-      readProps.push(`Read from child: ${singleChild.props[storyReadProp]}`);
-    } else if (storyReadProp === "$") {
-      readProps.push(`Read primitive from child: ${children}`);
-    } else {
-      readProps.push(
-        "Could not read from children. Children is not a component, primitive, or array"
-      );
+      } else if (storyReadProp === "$") {
+        readProps.push(`${" ".repeat(depth ?? 0)}[${index}]: ${children}`);
+      } else {
+        readProps.push(
+          "Could not read from children. Children is not a component, primitive, or array."
+        );
+      }
     }
-  }
+  };
+
+  readChildProps(children);
+
+  // if (storyReadProp && storyReadProp.length > 0 && children) {
+  //   if (Array.isArray(children)) {
+  //     const anyChildren = children as any;
+  //     anyChildren.forEach((child: any) => {
+  //       if (isSingleChild(child)) {
+  //         readProps.push(`Read from child: ${child.props[storyReadProp]}`);
+  //       } else if (storyReadProp === "$") {
+  //         readProps.push(`Read primitive from child: ${child}`);
+  //       } else {
+  //         readProps.push("Could not read from child. Child is not a component");
+  //       }
+  //     });
+  //   } else if (isSingleChild(children)) {
+  //     const singleChild = children as any;
+  //     readProps.push(`Read from child: ${singleChild.props[storyReadProp]}`);
+  //   } else if (storyReadProp === "$") {
+  //     readProps.push(`Read primitive from child: ${children}`);
+  //   } else {
+  //     readProps.push(
+  //       "Could not read from children. Children is not a component, primitive, or array"
+  //     );
+  //   }
+  // }
 
   // ---- props.children reordering -----//
 
@@ -221,12 +250,8 @@ export const PropsChildrenParent = (props: Props) => {
         <div>
           <div>Property: {storyReadProp}</div>
           <div>
-            {readProps.map((propValue, i, arr) => {
-              return (
-                <div>
-                  {arr.length > 1 && `[${i}]`} {propValue}
-                </div>
-              );
+            {readProps.map((propValue) => {
+              return <div>{propValue}</div>;
             })}
           </div>
         </div>
