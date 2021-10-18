@@ -5,11 +5,88 @@ import { Meta } from "@storybook/addon-docs";
 <style>{`
 `}</style>
 
-# Slots Spike
+# slot-spike
 
-This is a series of stories around controls that use props.children and slot attributes.
+A spike for Fluent UI vNext slots
 
-# Stories
+The goal is to compare the capabilities of two approaches:
 
-- I can specify a primitive value as the content of a container control.
-- I can specify a props as the content of a container control. (attributes only)
+- The existing Fluent UI vNext attribute-based slots
+  = Using props.children to provide slots
+
+## Stories
+
+### Capabilities
+
+- I can slot an only child, named child/children, list, or hierarchy of content.
+- I can read the props of slotted content.
+- I can modify the rendering (order, arrangement) of content.
+- I can modify the props of slotted content.
+- I can modify the classes/style of slotted content.
+- I can subscribe to an event from slotted content.
+- I can wrap an event from slotted content.
+
+### Types of slot content
+
+- I can slot primitive values.
+- I can slot HTML elements.
+- I can slot JSX.
+- I can slot render functions.
+- I can slot props //applies only to the attributes approach
+- I can slot a heterogeneous list/hierarchy of children. //may only apply to props.children approach
+
+### Types of children
+
+- I can slot a single child as content.
+- I can slot a list of children as content.
+- I can slot a hiearchy of children.
+
+## Appendix: props.children format
+
+### When children is a primitive
+
+```ts
+children: <value of primitive>
+```
+
+### When children is an HTML element
+
+```ts
+children: {
+  $$typeof: Symbol(react.element)
+  props: {
+    children: <value within the element>
+  }
+  type: <element type (like div or label)>
+}
+```
+
+### When children is a single component child
+
+```ts
+children: {
+  $$typeof: Symbol(react.element)
+  props: {
+    children: <value within the component>
+  }
+  type: props => {...}
+    displayName: <ComponentName>
+    name: <ComponentName>
+}
+```
+
+### When children is multiple HTML elements or components
+
+```ts
+children: [
+  {
+    $$typeof: Symbol(react.element),
+    type: <element type (like div or label)>
+    key: <value of key attribute>,
+    ref: <reference if any>
+    props: {
+      children: <value within the element>
+    }
+  }
+]
+```

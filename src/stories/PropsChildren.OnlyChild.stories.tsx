@@ -6,7 +6,7 @@ import { useAutoClearString } from "./useAutoClearString";
 import { renderPlane } from "./exampleComponents/renderVehicles";
 
 export default {
-  title: "Spike/props.children/only child",
+  title: "Spike/props.children/1-only child",
   component: PropsChildrenParent,
 } as ComponentMeta<typeof PropsChildrenParent>;
 

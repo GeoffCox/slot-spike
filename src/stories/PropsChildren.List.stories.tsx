@@ -12,7 +12,7 @@ import {
 } from "./exampleComponents/renderVehicles";
 
 export default {
-  title: "Spike/props.children/list",
+  title: "Spike/props.children/2-list",
   component: PropsChildrenParent,
 } as ComponentMeta<typeof PropsChildrenParent>;
 
