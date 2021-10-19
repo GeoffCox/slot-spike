@@ -9,24 +9,28 @@ import {
   IntrinsicShorthandProps,
   ObjectShorthandProps,
 } from "./slots/types";
-import {
-  PlaneComponent,
-  PlaneComponentProps,
-} from "./exampleComponents/PlaneComponent";
+import { ExampleComponentProps } from "./exampleComponents/ExampleComponentProps";
+import { PlaneComponent } from "./exampleComponents/PlaneComponent";
+import { TrainComponent } from "./exampleComponents/TrainComponent";
+import { AutomobileComponent } from "./exampleComponents/AutomobileComponent";
 
 type Slots = {
   root: IntrinsicShorthandProps<"div">;
   content?: ObjectShorthandProps<React.HTMLAttributes<HTMLElement>>;
-  exampleComponent?: ObjectShorthandProps<PlaneComponentProps>;
+  exampleComponent?: ObjectShorthandProps<ExampleComponentProps>;
 };
 
 type StoryOptions = {
-  storyReadProps?: boolean;
+  // a property name to read from the children, $ to read primitive value
+  storyReadProp?: string;
   storyUpdateProps?: boolean;
   storyHandleClick?: boolean;
 };
 
-type Props = ComponentProps<Slots> & StoryOptions;
+type Props = ComponentProps<Slots> &
+  StoryOptions & {
+    exampleComponentType?: "plane" | "train" | "automobile";
+  };
 
 type State = ComponentState<Slots>;
 
@@ -34,9 +38,10 @@ export const SlotParent = (props: Props) => {
   const {
     content,
     exampleComponent,
-    storyReadProps,
+    storyReadProp,
     storyUpdateProps,
     storyHandleClick,
+    exampleComponentType,
   } = props;
 
   // ----- Hooks ----- //
@@ -54,13 +59,25 @@ export const SlotParent = (props: Props) => {
 
   // ----- Props => State ----- //
 
+  const getExampleComponent = () => {
+    switch (exampleComponentType) {
+      case "train":
+        return TrainComponent;
+      case "automobile":
+        return AutomobileComponent;
+      case "plane":
+      default:
+        return PlaneComponent;
+    }
+  };
+
   const state: State = {
     ...props,
 
     components: {
       root: "div",
       content: "div",
-      exampleComponent: PlaneComponent,
+      exampleComponent: getExampleComponent(),
     },
 
     root: getNativeElementProps("div", { ...props }),
@@ -70,23 +87,41 @@ export const SlotParent = (props: Props) => {
 
   // ----- State => State ----- //
 
-  let description = "";
-  if (state.exampleComponent) {
-    if (storyReadProps) {
-      description = `Read from child: ${state.exampleComponent?.description}`;
+  let readProps: string[] = [];
+  if (storyReadProp && storyReadProp.length > 0) {
+    /*
+    BUGBUG: Figuring out all the different kinds of slot/children/props may not be done right here.
+    This goes back to the children vs object with resolveShorthand
+    */
+    if (state.content?.children) {
+      if (storyReadProp === "$") {
+        readProps.push(`${state.content.children}`);
+      } else {
+        const anyComponent: any = state.content.children as any;
+        if (anyComponent?.props?.[storyReadProp]) {
+          readProps.push(`${anyComponent.props[storyReadProp]}`);
+        }
+      }
     }
 
-    if (storyUpdateProps) {
-      state.exampleComponent.description = `Updated: ${state.exampleComponent.description}`;
+    if (state.exampleComponent) {
+      const anyComponent: any = state.exampleComponent as any;
+      if (anyComponent?.[storyReadProp]) {
+        readProps.push(`${anyComponent[storyReadProp]}`);
+      }
     }
+  }
 
-    if (storyHandleClick) {
-      const onClick = state.exampleComponent?.onExampleClick;
-      state.exampleComponent.onExampleClick = () => {
-        setClickMessage("Clicked!");
-        onClick && onClick();
-      };
-    }
+  if (storyUpdateProps && state.exampleComponent) {
+    state.exampleComponent.description = `Updated: ${state.exampleComponent.description}`;
+  }
+
+  if (storyHandleClick && state.exampleComponent) {
+    const onClick = state.exampleComponent?.onExampleClick;
+    state.exampleComponent.onExampleClick = () => {
+      setClickMessage("Clicked!");
+      onClick && onClick();
+    };
   }
 
   // ----- State => Slots & SlotProps ----- //
@@ -107,7 +142,16 @@ export const SlotParent = (props: Props) => {
           <slots.exampleComponent {...slotProps.exampleComponent} />
         </slots.root>
       </div>
-      <div>{description}</div>
+      {storyReadProp && (
+        <div>
+          <div>Property: {storyReadProp}</div>
+          <div>
+            {readProps.map((propValue) => {
+              return <div>{propValue}</div>;
+            })}
+          </div>
+        </div>
+      )}
       <div>{clickMessage}</div>
     </div>
   );

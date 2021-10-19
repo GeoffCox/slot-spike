@@ -149,61 +149,6 @@ export const UpdateProps = () => {
 
 export const SubscribeToEvent = () => {
   const [htmlElementMessage, setHtmlElementMessage] = useAutoClearString();
-  const [jsxMessage, setJsxMessage] = useAutoClearString();
-  const [renderMessage, setRenderMessage] = useAutoClearString();
-
-  return (
-    <div>
-      <div>
-        <h3>I can subscribe to an event on a primitive value</h3>
-        <p style={{ color: "green" }}>
-          This is N/A. Primitive values do not have any events.
-        </p>
-      </div>
-      <div>
-        <h3>I can subscribe to an event (onChange) on an HTML element</h3>
-        <PropsChildrenParent
-          storySubscribeEvent={{
-            name: "onChange",
-            onEvent: (value: any) => setHtmlElementMessage("Changed!"),
-          }}
-        >
-          <input type="text" defaultValue="Change some text here" />
-        </PropsChildrenParent>
-        <div>{htmlElementMessage}</div>
-      </div>
-      <div>
-        <h3>
-          I can subscribe to an event (onExampleClick) on a component (JSX)
-        </h3>
-        <PropsChildrenParent
-          storySubscribeEvent={{
-            name: "onExampleClick",
-            onEvent: (value: any) => setJsxMessage("Clicked!"),
-          }}
-        >
-          <PlaneComponent description="This is a plane" />
-        </PropsChildrenParent>
-        <div>{jsxMessage}</div>
-      </div>
-      <div>
-        <h3>I can subscribe to an event (onClick) on a render function</h3>
-        <PropsChildrenParent
-          storySubscribeEvent={{
-            name: "onClick",
-            onEvent: (value: any) => setRenderMessage("Clicked!"),
-          }}
-        >
-          {renderPlane({ description: "This is a plane" })}
-        </PropsChildrenParent>
-        <div>{renderMessage}</div>
-      </div>
-    </div>
-  );
-};
-
-export const WrapSingleChildEvent = () => {
-  const [htmlElementMessage, setHtmlElementMessage] = useAutoClearString();
   const [
     htmlElementChildMessage,
     setHtmlElementChildMessage,

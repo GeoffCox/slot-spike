@@ -5,7 +5,7 @@ import { PlaneComponent } from "./exampleComponents/PlaneComponent";
 import { renderPlane } from "./exampleComponents/renderVehicles";
 
 export default {
-  title: "Spike/slot attributes",
+  title: "Spike/slot attributes/1-only child",
   component: SlotParent,
 } as ComponentMeta<typeof SlotParent>;
 
@@ -38,29 +38,71 @@ export const SlotContent = () => {
       </div>
       <div>
         <h3>I can slot component props</h3>
-        <SlotParent exampleComponent={{ description: "This is a plane" }} />
+        <SlotParent
+          exampleComponentType="plane"
+          exampleComponent={{ description: "This is a plane" }}
+        />
       </div>
     </div>
   );
 };
 
-export const ReadSingleChildProps = () => {
+export const ReadProps = () => {
   return (
     <div>
-      <p>I can read the props of a child.</p>
-      <SlotParent
-        exampleComponent={{ description: "This is a plane" }}
-        storyReadProps
-      />
+      <div>
+        <h3>I can read a primitive value.</h3>
+        <SlotParent content="This is a plane (string)" storyReadProp="$" />
+      </div>
+      <div>
+        <h3>I can read the props of an HTML element</h3>
+        <SlotParent
+          content={
+            <input
+              type="text"
+              defaultValue="This is a plane (input)"
+              style={{ display: "block" }}
+            />
+          }
+          storyReadProp="defaultValue"
+        />
+      </div>
+      <div>
+        <h3>I can read the props of a component (JSX)</h3>
+        <SlotParent
+          content={<PlaneComponent description="This is a plane" />}
+          storyReadProp="description"
+        />
+      </div>
+      <div>
+        <h3>I can read the props of a render function</h3>
+        {/* //Strange to have to pass the function as children rather than directly.
+        //Possible issue with the way getShorthand works */}
+        <SlotParent
+          content={{
+            children: renderPlane({ description: "This is a plane" }),
+          }}
+          storyReadProp="description"
+        />
+      </div>
+      <div>
+        <h3>I can read component props.</h3>
+        <SlotParent
+          exampleComponentType="plane"
+          exampleComponent={{ description: "This is a plane" }}
+          storyReadProp="description"
+        />
+      </div>
     </div>
   );
 };
 
-export const UpdateSingleChildProps = () => {
+export const UpdateProps = () => {
   return (
     <div>
-      <p>I can modify the props of a child.</p>
+      <h3>I can modify the component props.</h3>
       <SlotParent
+        exampleComponentType="plane"
         exampleComponent={{ description: "This is a plane" }}
         storyUpdateProps
       />
@@ -68,19 +110,19 @@ export const UpdateSingleChildProps = () => {
   );
 };
 
-export const SubscribeToSingleChildEvent = () => {
-  return (
-    <div>
-      <p>I can subscribe to an event (callback) of a child.</p>
-      <SlotParent
-        exampleComponent={{ description: "This is a plane" }}
-        storyHandleClick
-      />
-    </div>
-  );
-};
+// export const SubscribeToEvent = () => {
+//   return (
+//     <div>
+//       <p>I can subscribe to an event (callback) of a child.</p>
+//       <SlotParent
+//         exampleComponent={{ description: "This is a plane" }}
+//         storyHandleClick
+//       />
+//     </div>
+//   );
+// };
 
-export const WrapSingleChildEvent = () => {
+export const SubscribeToEvent = () => {
   const [clickMessage, setClickMessage] = React.useState("");
 
   React.useEffect(() => {
@@ -109,6 +151,7 @@ This makes the state shape vary depending on how the slot is filled in!
     <div>
       <p>I can wrap to an event (callback) of a child.</p>
       <SlotParent
+        exampleComponentType="plane"
         exampleComponent={{
           description: "This is a plane",
           onExampleClick: () => setClickMessage("Child clicked!"),

@@ -20,7 +20,7 @@ export const SlotContent = () => {
   return (
     <div>
       <div>
-        <h3>I can slot primitive values</h3>
+        <h3>I can slot a list primitive values</h3>
         <PropsChildrenParent>
           {[
             "This is a plane (string)",
@@ -32,7 +32,7 @@ export const SlotContent = () => {
         </PropsChildrenParent>
       </div>
       <div>
-        <h3>I can slot HTML elements</h3>
+        <h3>I can slot a list HTML elements</h3>
         <PropsChildrenParent>
           <label style={{ display: "block" }}>This is a plane (label)</label>
           <div>-----</div>
@@ -44,7 +44,7 @@ export const SlotContent = () => {
         </PropsChildrenParent>
       </div>
       <div>
-        <h3>I can slot components (JSX)</h3>
+        <h3>I can slot a list components (JSX)</h3>
         <PropsChildrenParent>
           <PlaneComponent description="This is a plane" />
           <TrainComponent description="This is a train" />
@@ -52,7 +52,7 @@ export const SlotContent = () => {
         </PropsChildrenParent>
       </div>
       <div>
-        <h3>I can slot a render function</h3>
+        <h3>I can slot a list render functions</h3>
         <PropsChildrenParent>
           {renderPlane({ description: "This is a plane" })}
           {renderTrain({ description: "This is a train" })}
@@ -73,7 +73,7 @@ export const NamedSlots = () => {
   return (
     <div>
       <div>
-        <h3>I can reorder primitive values based on position</h3>
+        <h3>I can reorder a list of primitive values based on position</h3>
         <p style={{ color: "green" }}>
           This moves the 5th element to be first.
         </p>
@@ -88,7 +88,7 @@ export const NamedSlots = () => {
         </PropsChildrenParent>
       </div>
       <div>
-        <h3>I can reorder HTML elements with a named slot</h3>
+        <h3>I can reorder a list of HTML elements with a named slot</h3>
         <p style={{ color: "green" }}>
           This moves the element with slot="automobile" to be first.
         </p>
@@ -103,7 +103,7 @@ export const NamedSlots = () => {
         </PropsChildrenParent>
       </div>
       <div>
-        <h3>I can reorder components (JSX) with a named slot</h3>
+        <h3>I can reorder a list of components (JSX) with a named slot</h3>
         <p style={{ color: "green" }}>
           This moves the component with slot="automobile" to be first.
         </p>
@@ -117,7 +117,10 @@ export const NamedSlots = () => {
         </PropsChildrenParent>
       </div>
       <div>
-        <h3>I can reorder render functions with a named slot</h3>
+        <h3>I can reorder a list of render functions with a named slot</h3>
+        <p style={{ color: "green" }}>
+          This moves the component with slot="automobile" to be first.
+        </p>
         <PropsChildrenParent storyMoveSlotFirst="automobile">
           {renderPlane({ description: "This is a plane", slot: "plane" })}
           {renderTrain({ description: "This is a train", slot: "train" })}
@@ -128,7 +131,7 @@ export const NamedSlots = () => {
         </PropsChildrenParent>
       </div>
       <div>
-        <h3>I can slot component props</h3>
+        <h3>I can reorder a list of component props</h3>
         <p style={{ color: "green" }}>
           This is N/A for the props.children approach.
         </p>
@@ -141,7 +144,7 @@ export const ReadProps = () => {
   return (
     <div>
       <div>
-        <h3>I can read primitive values</h3>
+        <h3>I can read a list of primitive values</h3>
         <PropsChildrenParent storyReadProp="$">
           {[
             "This is a plane (string)",
@@ -153,7 +156,7 @@ export const ReadProps = () => {
         </PropsChildrenParent>
       </div>
       <div>
-        <h3>I can read the props of HTML elements</h3>
+        <h3>I can read the props of a list of HTML elements</h3>
         <PropsChildrenParent storyReadProp="defaultValue">
           <input
             type="text"
@@ -173,7 +176,7 @@ export const ReadProps = () => {
         </PropsChildrenParent>
       </div>
       <div>
-        <h3>I can read the props of components (JSX)</h3>
+        <h3>I can read the props of a list of components (JSX)</h3>
         <PropsChildrenParent storyReadProp="description">
           <PlaneComponent description="This is a plane" />
           <TrainComponent description="This is a train" />
@@ -181,7 +184,7 @@ export const ReadProps = () => {
         </PropsChildrenParent>
       </div>
       <div>
-        <h3>I can read the props of render functions</h3>
+        <h3>I can read the props of a list of render functions</h3>
         <p style={{ color: "green" }}>
           For props.children, this reads the props of the root element, not the
           props passed to the function.
@@ -215,7 +218,7 @@ export const UpdateProps = () => {
   return (
     <div>
       <div>
-        <h3>I can modify primitive values</h3>
+        <h3>I can modify a list of primitive values</h3>
         <PropsChildrenParent
           storyUpdateProp={{
             name: "$",
@@ -232,7 +235,7 @@ export const UpdateProps = () => {
         </PropsChildrenParent>
       </div>
       <div>
-        <h3>I can modify props of HTML elements</h3>
+        <h3>I can modify props of a list of HTML elements</h3>
         <PropsChildrenParent
           storyUpdateProp={{
             name: "defaultValue",
@@ -257,7 +260,7 @@ export const UpdateProps = () => {
         </PropsChildrenParent>
       </div>
       <div>
-        <h3>I can modify props of a component (JSX)</h3>
+        <h3>I can modify props of a list of components (JSX)</h3>
         <PropsChildrenParent
           storyUpdateProp={{
             name: "description",
@@ -270,7 +273,7 @@ export const UpdateProps = () => {
         </PropsChildrenParent>
       </div>
       <div>
-        <h3>I can modify the props of a render function</h3>
+        <h3>I can modify the props of a list of render functions</h3>
         <p style={{ color: "green" }}>
           For props.children, this reads the props of the root element, not the
           props passed to the function.
@@ -300,88 +303,6 @@ export const UpdateProps = () => {
 };
 
 export const SubscribeToEvent = () => {
-  const [htmlElementMessage, setHtmlElementMessage] = useAutoClearString();
-  const [jsxMessage, setJsxMessage] = useAutoClearString();
-  const [renderMessage, setRenderMessage] = useAutoClearString();
-
-  return (
-    <div>
-      <div>
-        <h3>I can subscribe to an event on primitive values</h3>
-        <p style={{ color: "green" }}>
-          This is N/A. Primitive values do not have any events.
-        </p>
-      </div>
-      <div>
-        <h3>I can subscribe to an event (onChange) on HTML elements</h3>
-        <PropsChildrenParent
-          storySubscribeEvent={{
-            name: "onChange",
-            onEvent: (value: any) => setHtmlElementMessage("Changed!"),
-          }}
-        >
-          <input
-            type="text"
-            defaultValue="This is a plane (input)"
-            style={{ display: "block" }}
-          />
-          <input
-            type="text"
-            defaultValue="This is a train (input)"
-            style={{ display: "block" }}
-          />
-          <input
-            type="text"
-            defaultValue="This is an automobile (input)"
-            style={{ display: "block" }}
-          />
-        </PropsChildrenParent>
-        <div>{htmlElementMessage}</div>
-      </div>
-      <div>
-        <h3>
-          I can subscribe to an event (onExampleClick) on components (JSX).
-        </h3>
-        <PropsChildrenParent
-          storySubscribeEvent={{
-            name: "onExampleClick",
-            onEvent: (value: any) => setJsxMessage("Clicked!"),
-          }}
-        >
-          <PlaneComponent description="This is a plane" />
-          <TrainComponent description="This is a train" />
-          <AutomobileComponent description="This is an automobile" />
-        </PropsChildrenParent>
-        <div>{jsxMessage}</div>
-      </div>
-      <div>
-        <h3>I can subscribe to an event (onClick) on render functions</h3>
-        <PropsChildrenParent
-          storySubscribeEvent={{
-            name: "onClick",
-            onEvent: (value: any) => setRenderMessage("Clicked!"),
-          }}
-        >
-          {renderPlane({
-            title: "This is a plane",
-            description: "Hover for the tooltip",
-          })}
-          {renderTrain({
-            title: "This is a plane",
-            description: "Hover for the tooltip",
-          })}
-          {renderAutomobile({
-            title: "This is a plane",
-            description: "Hover for the tooltip",
-          })}
-        </PropsChildrenParent>
-        <div>{renderMessage}</div>
-      </div>
-    </div>
-  );
-};
-
-export const WrapSingleChildEvent = () => {
   const [htmlElementMessage, setHtmlElementMessage] = useAutoClearString();
   const [
     htmlElementChildMessage,
@@ -419,13 +340,13 @@ export const WrapSingleChildEvent = () => {
   return (
     <div>
       <div>
-        <h3>I can wrap an event on primitive values</h3>
+        <h3>I can wrap an event on a list of primitive values</h3>
         <p style={{ color: "green" }}>
           This is N/A. Primitive values do not have any events.
         </p>
       </div>
       <div>
-        <h3>I can wrap an event (onChange) on HTML elements</h3>
+        <h3>I can wrap an event (onChange) on a list of HTML elements</h3>
         <PropsChildrenParent
           storySubscribeEvent={{
             name: "onChange",
@@ -455,7 +376,9 @@ export const WrapSingleChildEvent = () => {
         <div>{htmlElementChildMessage}</div>
       </div>
       <div>
-        <h3>I can wrap an event (onExampleClick) on a components (JSX)</h3>
+        <h3>
+          I can wrap an event (onExampleClick) on a list of components (JSX)
+        </h3>
         <PropsChildrenParent
           storySubscribeEvent={{
             name: "onExampleClick",
