@@ -40,6 +40,33 @@ The goal is to compare the capabilities of two approaches:
 - I can slot a list of children as content.
 - I can slot a hiearchy of children.
 
+## Findings
+
+- There aren't any technical limitations to the attributes or props.children approaches.
+- Both approaches require about the same amount of helper code to navigate and manipulate slotted content.
+
+- The props.children approach is more idomatic web development. Elements are defined in JSX, data is passed on attributes.
+- The props.children approach provides type, key, ref, and component name inspection for free. The attributes approach will require defining new types and some inspection code.
+- The props.children approach provides more rendering performance control to the caller (although memoization of render results is discouraged over data)
+
+- The attributes approach provides better discovery than props.children because the attributes are defined and documented in the pros of the component.
+- The attributes approach introduces the challenge of where to apply props (root element or logically associated element).
+- The attributes approach allows for render function pointers to be passed to the component. This lets the component control delayed or conditional rendering.
+
+- List virtualization libraries most often have an items attribute that accepts a data array.
+  The item template is defined as the singular child in react-window, but grouped item scenarios may require attributes to handle multiple templates.
+
+## Conclusions
+
+- Fluent's philosophy of slots can guide when to use attributes vs. props.children.
+  - If a Fluent component provide a fixed set of layouts and a restricted set of slots for the parts that are designed to be replaced,
+    then the attributes approach would work well.
+    Slotted content would likely be singular or small bits of JSX.
+  - If a Fluent component provides a default layout and slotted content, but callers can replace the layout,
+    then the props.children approach would work well.
+    The children could be any hierarchy callers wanted where individual parts are identified as slots.
+    The component would wire up the behavior to the slots.
+
 ## Appendix: props.children format
 
 ### When children is a primitive

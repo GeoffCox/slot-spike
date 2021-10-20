@@ -23,7 +23,13 @@ type Slots = {
 type StoryOptions = {
   // a property name to read from the children, $ to read primitive value
   storyReadProp?: string;
-  storyUpdateProps?: boolean;
+
+  // a property name and callback to update a property
+  storyUpdateProp?: {
+    name: string;
+    onUpdate: (value: any) => any;
+  };
+
   storyHandleClick?: boolean;
 };
 
@@ -39,7 +45,7 @@ export const SlotParent = (props: Props) => {
     content,
     exampleComponent,
     storyReadProp,
-    storyUpdateProps,
+    storyUpdateProp,
     storyHandleClick,
     exampleComponentType,
   } = props;
@@ -112,8 +118,13 @@ export const SlotParent = (props: Props) => {
     }
   }
 
-  if (storyUpdateProps && state.exampleComponent) {
-    state.exampleComponent.description = `Updated: ${state.exampleComponent.description}`;
+  if (storyUpdateProp && state.exampleComponent) {
+    const anyComponent: any = state.exampleComponent as any;
+    if (anyComponent?.[storyUpdateProp.name]) {
+      anyComponent[storyUpdateProp.name] = storyUpdateProp.onUpdate(
+        anyComponent[storyUpdateProp.name]
+      );
+    }
   }
 
   if (storyHandleClick && state.exampleComponent) {

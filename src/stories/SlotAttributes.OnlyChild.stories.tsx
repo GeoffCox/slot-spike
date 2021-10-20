@@ -104,7 +104,10 @@ export const UpdateProps = () => {
       <SlotParent
         exampleComponentType="plane"
         exampleComponent={{ description: "This is a plane" }}
-        storyUpdateProps
+        storyUpdateProp={{
+          name: "description",
+          onUpdate: (value: any) => `Updated: ${value}`,
+        }}
       />
     </div>
   );
