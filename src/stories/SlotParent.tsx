@@ -93,6 +93,7 @@ export const SlotParent = (props: Props) => {
 
   // ----- State => State ----- //
 
+  // Read Props
   let readProps: string[] = [];
   if (storyReadProp && storyReadProp.length > 0) {
     /*
@@ -118,15 +119,34 @@ export const SlotParent = (props: Props) => {
     }
   }
 
-  if (storyUpdateProp && state.exampleComponent) {
-    const anyComponent: any = state.exampleComponent as any;
-    if (anyComponent?.[storyUpdateProp.name]) {
-      anyComponent[storyUpdateProp.name] = storyUpdateProp.onUpdate(
-        anyComponent[storyUpdateProp.name]
-      );
+  // Update Props
+  if (storyUpdateProp) {
+    if (state.content?.children) {
+      if (storyUpdateProp.name === "$") {
+        state.content.children = storyUpdateProp.onUpdate(
+          state.content.children
+        );
+      } else {
+        const anyComponent: any = state.content.children as any;
+        const updatedProps: any = {};
+        updatedProps[storyUpdateProp.name] = storyUpdateProp.onUpdate(
+          anyComponent.props[storyUpdateProp.name]
+        );
+        state.content.children = React.cloneElement(anyComponent, updatedProps);
+      }
+    }
+
+    if (state.exampleComponent) {
+      const anyComponent: any = state.exampleComponent as any;
+      if (anyComponent?.[storyUpdateProp.name]) {
+        anyComponent[storyUpdateProp.name] = storyUpdateProp.onUpdate(
+          anyComponent[storyUpdateProp.name]
+        );
+      }
     }
   }
 
+  // Subscribe event
   if (storyHandleClick && state.exampleComponent) {
     const onClick = state.exampleComponent?.onExampleClick;
     state.exampleComponent.onExampleClick = () => {

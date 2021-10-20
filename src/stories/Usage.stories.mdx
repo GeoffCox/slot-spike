@@ -1,0 +1,314 @@
+import { Meta } from "@storybook/addon-docs";
+
+<Meta title="Usage Comparison" />
+
+<style>{`
+`}</style>
+
+# Usage comparison
+
+## Single slot
+
+### attributes
+
+Badge currently uses children to provide the content within the badge.
+
+```tsx
+<Badge appearance="outline" size="large" shape="rounded">
+  999+
+</Badge>
+```
+
+It could also have a label slot for text.
+This would be consistent with Avatar which has label, icon, and badge slots.
+
+```tsx
+<Badge appearance="outline" label="999+" size="large" shape="rounded" />
+```
+
+Badge also has an icon slot.
+The children can be used in tandem with icon.
+
+```tsx
+<Badge appearance="outline" icon={<MyIcon />} size="large" shape="rounded" />
+
+<Badge appearance="outline" icon={<MyIcon />} size="large" shape="rounded">999+</Badge>
+```
+
+### props.children
+
+As mentioned in the attributes section, Badge currently uses children to provide the content within the badge.
+
+```tsx
+<Badge appearance="outline" size="large" shape="rounded">
+  999+
+</Badge>
+```
+
+Badge children supports multiple elements so it could be used for an icon or icon and text.
+
+```tsx
+<Badge appearance="outline" size="large" shape="rounded">
+  <MyIcon>
+</Badge>
+```
+
+```tsx
+<Badge appearance="outline" size="large" shape="rounded">
+  <MyIcon />
+  999+
+</Badge>
+```
+
+## Multiple Slots
+
+### attributes
+
+SplitButton provides both icon and a menuIcon slots.
+
+Slots with default content are optional attributes.
+Required slots are non-optional attributes.
+
+```tsx
+<SplitButton
+  appearance="subtle"
+  block
+  icon={<MyIcon />}
+  menuIcon={<MyMenuIcon />}
+/>
+```
+
+### props.children
+
+SplitButton using children could have named slots for icon and menuIcon.
+
+Slots with default content don't need to be specified.
+Required slots may require a runtime error when missing.
+
+```tsx
+<SplitButton appearance="subtle" block>
+    <MyIcon slot="icon" />
+    <MyMenuIcon slot="menuIcon" />
+<SplitButton>
+```
+
+## Layout with slots
+
+### attributes
+
+Button supports positioning the icon relative to the children.
+
+```tsx
+<Button
+  appearance="subtle"
+  block
+  icon={<MyIcon />}
+  iconPosition="after"}
+>Click Me</Button>
+```
+
+### props.children
+
+Button using children could provide a layout attribute,
+or could dynamically layout based on available width/height.
+
+In this case the icon can appear before/after based on its position.
+
+```tsx
+<Button appearance="subtle" block layout="horizontal">
+    <span slot="content">Click Me</span>
+    <MyIcon slot="icon" />
+<Button>
+```
+
+The slot names are not required if the button layout is essentially `display:flex` with `flex-direction: row | column`.
+
+```tsx
+<Button appearance="subtle" block>
+    <span>Click Me</span>
+    <MyIcon />
+<Button>
+```
+
+## Interacting Slots Part 1: Field component basics
+
+The Field component PoR is to have a label, input, description, error message, and a required indicator.
+
+Note: Field props and slots are still being formulated [here](https://hackmd.io/GQJtwlWnRpaT56yOLGBKhA)
+
+### attributes
+
+The Field supports label input, and error message slots.
+
+- The label could be passed a primitive value, HTML, or JSX.
+- The input could be passed a primitive value (to set the defaultValue), HTML, JSX, or props for `<input />`.
+
+```tsx
+<Field label="First Name" description="The first name of the customer" input={<MyInput />} required errorMessage="{errorMessage}"/>
+
+<Field label="First Name" description="The first name of the customer" input={{defaultValue: "John"} required errorMessage="{errorMessage}"/>
+```
+
+### props.children
+
+If Field used children, there could be a slot for label, input, description, and error message.
+
+```tsx
+<Field required>
+  <label slot="label">First Name</label>
+  <div slot="description">The first name of the customer</div>
+  <MyInput
+    placeholder="Type your first name here to get started"
+    slot="input"
+  />
+  <div slot="errorMessage></div>
+</Field>
+```
+
+The required indicator could also be a slot to allow the caller to control the positioning relative to label and input.
+
+```tsx
+
+<Field>
+  <label slot="label">First Name</label>
+  <span class="my-required" slot="required">*</span>
+  <div slot="description">The first name of the customer</div>
+  <MyInput
+    placeholder="Type your first name here to get started"
+    slot="input"
+  />
+  <div slot="errorMessage></div>
+</Field>
+```
+
+If the caller wanted to provide a primitive string for the label and/or description,
+Field could provide an attribute for the default value of the label and description.
+
+```tsx
+<Field label="First Name" description="The first name of the customer">
+  <MyInput
+    placeholder="Type your first name here to get started"
+    slot="input"
+  />
+</Field>
+```
+
+## Interacting Slots Part 2: Field component error message
+
+An open question is how much of validation and controlling the error message is up to the caller.
+
+Option A is to let the caller subscribe to onChange from the Field, validate, and set the error message.
+If the caller has slotted input content it might be confusing whether to subscribe to Field.onChange or input.onChange.
+
+Option B is for the error message to take props for validation and returns the error element or content.
+
+```tsx
+const MyErrorMessage = (props: FieldValidateProps) => {
+  const { value } = props;
+  return (
+    value.contains("yuck") && <MyError>Yuck is not a valid first name</MyError>
+  );
+};
+```
+
+### attributes
+
+Option A-1: subscribe to Field.onChange
+
+```tsx
+<Field onChange={(value) => setErrorMessage(noBadWords(value)} errorMessage={errorMessage}/>
+
+<Field input={{onChange: (value) => setErrorMessage(noBadWords(value))}} errorMessage={errorMessage}/>
+```
+
+Option A-2: subscribe to input.onChange
+
+```tsx
+<Field input={<MyInput onChange={(value) => {setErrorMessage(noBadWords(value))}} />} errorMessage={errorMessage}/>
+
+<Field input={{onChange: (value) => setErrorMessage(noBadWords(value))}} errorMessage={errorMessage} />
+```
+
+Option B: errorMessage passed validate props
+
+```tsx
+<Field errorMessage={<MyErrorMessage />} />
+```
+
+### props.children
+
+Option A-1: subscribe to Field.onChange
+
+```tsx
+<Field label="First Name" onChange={(value) => {setErrorMessage(noBadWords(value))}>
+  <div class="my-error">{errorMessage}</div>
+</Field>
+```
+
+Option A-2: subscribe to input.onChange
+
+```tsx
+<Field label="First Name">
+    <MyInput onChange={(value) => {setErrorMessage(noBadWords(value))} slot="input" />
+  <div class="my-error">{errorMessage}</div>
+</Field>
+```
+
+Option B: errorMessage passed validate props
+
+```tsx
+<Field label="First Name">
+  <MyErrorMessage slot="errorMessage" />
+</Field>
+```
+
+## Lists
+
+### attributes
+
+A List using attributes for items could take an array of data, JSX, or props.
+The data and props could have the type of each item controlled via an item template slot.
+The JSX could be provided directly or through a map.
+
+```tsx
+const customers = {key: "Bill", name: "Bill}, {key: "John", name: "John}, {key: "Sally", name: "Sally}, {key: "Tico", name: "Tico};
+
+
+<List
+    items={customers}
+    itemTemplate={<MyListItem />} />
+
+<List items={[<MyItem key="Bill">Bill</MyItem>,<MyItem key="John">John</MyItem>,<MyItem key="Sally">Sally</MyItem>,<MyItem key="Tico">Tico</MyItem>]} />
+
+<List items={customers.map((value) => <MyItem key={value}>{value}</MyItem>} />
+
+<List items={customers} itemTemplate={<MyListItem />} />
+```
+
+### props.children
+
+The JSX could be provided directly or through a map.
+
+```tsx
+<List>
+    <MyItem key="Bill">Bill</MyItem>
+    <MyItem key="John">John</MyItem>
+    <MyItem key="Sally">Sally</MyItem>
+    <MyItem key="Tico">Tico</MyItem>
+</List>
+
+<List>
+    {customers.map((value) => <MyItem key={value}>{value}</MyItem> }
+</List>
+```
+
+A List could also have an items attribute as data and then have a single child that defines the item template.
+This is the approach with the react-window list virtualization library.
+
+In this case the MyItem would ensure the key is set based on the props passed to it.
+
+```tsx
+<List items={["Bill", "John", "Sally", "Tico"]}>
+  <MyItem />
+</List>
+```

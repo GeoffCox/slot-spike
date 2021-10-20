@@ -11,8 +11,13 @@ A spike for Fluent UI vNext slots
 
 The goal is to compare the capabilities of two approaches:
 
-- The existing Fluent UI vNext attribute-based slots
-  = Using props.children to provide slots
+- Fluent UI vNext attribute-based slots
+- slots provided through props.children
+
+to help these RFCS:
+
+- [RFC: update slots API to allow arrays](https://github.com/microsoft/fluentui/pull/19266)
+- [Field label approaches](https://hackmd.io/GQJtwlWnRpaT56yOLGBKhA)
 
 ## Stories
 
@@ -44,30 +49,56 @@ The goal is to compare the capabilities of two approaches:
 
 - There aren't any technical limitations to the attributes or props.children approaches.
 - Both approaches require about the same amount of helper code to navigate and manipulate slotted content.
+- Even with strong typing, both approaches require the component to validate slotted content at runtime.
 
-- The props.children approach is more idomatic web development. Elements are defined in JSX, data is passed on attributes.
-- The props.children approach provides type, key, ref, and component name inspection for free. The attributes approach will require defining new types and some inspection code.
-- The props.children approach provides more rendering performance control to the caller (although memoization of render results is discouraged over data)
+**The props.children approach**
 
-- The attributes approach provides better discovery than props.children because the attributes are defined and documented in the pros of the component.
-- The attributes approach introduces the challenge of where to apply props (root element or logically associated element).
-- The attributes approach allows for render function pointers to be passed to the component. This lets the component control delayed or conditional rendering.
+- provides a complete hierarchy for inspection/modification (type, key, ref, and component name).
+  The dive deeper than the root of the slotted content, the attributes approach will require additional code.
+- provides more rendering control to the caller (although memoization of render results should be discouraged)
+- introduces the problem of restricting the shape of the children to something than is supported by the layout and behavior of the component.
+- feels more idomatic.
+  Elements are defined in JSX, data is passed on attributes.
 
+**The attributes approach**
+
+- provides better slot discovery than props.children. The attributes are defined in the problems and can be documented with the component.
+- introduces the challenge of where to apply props (root element or logically associated element).
+- allows for render function pointers to be passed to the component. This lets the component control delayed or conditional rendering.
+- is problematic for Storybook controls as the UI isn't designed to input complex JSX.
+
+**Existing art**
+
+- Per shift's comments on the RFC, the props.children approach appears more popular in other component libraries.
 - List virtualization libraries most often have an items attribute that accepts a data array.
   The item template is defined as the singular child in react-window, but grouped item scenarios may require attributes to handle multiple templates.
+- Modern tree virtualization flattens hierarchy to a single list with parent/child and depth tracking to allow list virtualization.
 
-## Conclusions
+## Opinion
 
-- Fluent's philosophy of slots can guide when to use attributes vs. props.children.
-  - If a Fluent component provide a fixed set of layouts and a restricted set of slots for the parts that are designed to be replaced,
-    then the attributes approach would work well.
-    Slotted content would likely be singular or small bits of JSX.
-  - If a Fluent component provides a default layout and slotted content, but callers can replace the layout,
-    then the props.children approach would work well.
-    The children could be any hierarchy callers wanted where individual parts are identified as slots.
-    The component would wire up the behavior to the slots.
+If it were all up to me, I would:
+
+- use props.children for named slots
+  - Components can restrict the children to a single element, a list, a limited hierarchy, or an opaque child/children.
+  - Slots are used infrequently, so the expectation is that the developer will need to read documentation anyway (i.e. discovery isn't critical)
+- use attributes for setting primitive values for the default slot content (e.g. <Field label="First Name" />)
+- use attributes for items data in virtualized lists
+- use props.children for group and item templates in virtualized lists
+
+## Appendix: Challenges found with vNext attribute-slots
+
+1. The type specification for ObjectShorthandProps requires the render function be specified as 'children' rather than a replacement for the entire props structure.
+2. The resolveShorthandProps method returns an object with children when
+   the slotted content is a primitive, array, or render function,
+   but returns the props directly when the slotted content is a props object.
+3. When using ObjectShorthandProps with a specific props type, components must specify the real component to instantiate in ComponentState.components.
+   This requires a component to depend on the different concrete type instances of the slotted content components based on the props types.
+   This causes extra if/then code to handle the different cases in the caller code.
+4. If a component needs to inspect the resolved state of slotted content that is complex JSX, the same props.children navigation code will be required.
 
 ## Appendix: props.children format
+
+This details the data shape of props.children depending on the slotted content.
 
 ### When children is a primitive
 

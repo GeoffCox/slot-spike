@@ -69,8 +69,8 @@ export const ReadProps = () => {
       <div>
         <h3>I can read the props of a render function</h3>
         <p style={{ color: "green" }}>
-          For props.children, this reads the props of the root element, not the
-          props passed to the function.
+          With render functions, the component only has the resulting HTML to
+          inspect.
         </p>
         <PropsChildrenParent storyReadProp="title">
           {renderPlane({
@@ -128,8 +128,8 @@ export const UpdateProps = () => {
       <div>
         <h3>I can modify the props of a render function</h3>
         <p style={{ color: "green" }}>
-          For props.children, this reads the props of the root element, not the
-          props passed to the function.
+          With render functions, the component only has the resulting HTML to
+          inspect.
         </p>
         <PropsChildrenParent
           storyUpdateProp={{
